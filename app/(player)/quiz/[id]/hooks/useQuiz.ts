@@ -6,7 +6,7 @@ import React from 'react';
 
 import { queryClient, QueryContext } from '~/(player)/quiz/[id]/QueryContext';
 import { getQuiz } from '~/shared/data/getQuiz';
-import { db, genericConverter } from '~/shared/lib/firebaseClient';
+import { db, genericConverter } from '~/shared/lib/firebase';
 import type { Quiz, Team } from '~/shared/types';
 
 const queryKey = ['quiz'];

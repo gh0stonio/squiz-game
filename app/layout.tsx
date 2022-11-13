@@ -1,3 +1,5 @@
+import 'server-only';
+
 import '~/shared/styles/globals.css';
 
 import React from 'react';

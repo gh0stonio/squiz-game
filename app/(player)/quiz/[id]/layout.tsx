@@ -1,6 +1,7 @@
 import 'server-only';
 import React from 'react';
 
+import NavBar from '~/shared/components/NavBar';
 import { getQuiz } from '~/shared/data/getQuiz';
 
 import QueryContext from './QueryContext';
@@ -23,6 +24,8 @@ export default async function PlayerLayout({
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-center">
+      <NavBar />
+
       <QueryContext initialData={{ quiz }}>
         <div className="m-auto mb-10 h-5/6 w-[95%] rounded-xl bg-gray-100 shadow-xl">
           {children}
