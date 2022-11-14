@@ -6,14 +6,12 @@ import { HiOutlineUser } from 'react-icons/hi';
 import React from 'react';
 
 import useAuth from '~/shared/hooks/useAuth';
-import { auth } from '~/shared/lib/firebase';
 
 import Logo from '../../../public/logo.png';
 
 export default function NavBar() {
-  const { logIn, logOut } = useAuth();
+  const { user, logIn, logOut } = useAuth();
   const pathName = usePathname();
-  const isAdminPage = pathName?.startsWith('/quiz/admin');
 
   return (
     <div className="navbar my-10 w-[95%] rounded-xl bg-gray-100 px-4">
@@ -29,9 +27,9 @@ export default function NavBar() {
           <div className="dropdown-end dropdown">
             <label tabIndex={0} className="btn-ghost btn-circle avatar btn">
               <div className="w-10 rounded-full">
-                {auth.currentUser?.photoURL ? (
+                {user?.photoURL ? (
                   <Image
-                    src={auth.currentUser.photoURL!}
+                    src={user.photoURL!}
                     alt="user photo"
                     width={40}
                     height={40}
@@ -48,7 +46,7 @@ export default function NavBar() {
               tabIndex={0}
               className="dropdown-content menu rounded-box menu-compact mt-3 w-52 bg-gray-100 p-2 shadow"
             >
-              {auth.currentUser ? (
+              {user ? (
                 <li>
                   <button onClick={logOut}>Sign Out</button>
                 </li>

@@ -1,20 +1,45 @@
 'use client';
 import 'client-only';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { type User as FirebaseUser } from 'firebase/auth';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { setCookie } from 'nookies';
 import React from 'react';
 
-import { auth } from '~/shared/lib/firebase';
+import { auth } from '~/shared/lib/firebaseClient';
+
+import { AuthContext } from '../context/AuthContext';
+
+async function setTokenCookie(user: FirebaseUser) {
+  const idToken = await user.getIdToken(true);
+  setCookie(null, 'id_token', idToken, {
+    maxAge: 60 * 60, // 1 hour
+    path: '/',
+    sameSite: 'None',
+    secure: true,
+  });
+}
+function clearTokenCookie() {
+  setCookie(null, 'id_token', '', {
+    maxAge: 0,
+    path: '/',
+    sameSite: 'None',
+    secure: true,
+  });
+}
 
 export default function useAuth() {
+  const { user, setUser } = React.useContext(AuthContext);
   const [error, setError] = React.useState<string>();
-  const [isLoading, setIsLoading] = React.useState(true);
 
   const router = useRouter();
   const pathName = usePathname();
   const params = useSearchParams();
 
   const referer = params.get('referer');
+  if (user && referer) {
+    router.push(referer);
+  }
 
   const logIn = React.useCallback(async () => {
     const provider = new GoogleAuthProvider();
@@ -32,32 +57,45 @@ export default function useAuth() {
       return auth.signOut();
     }
 
+    setTokenCookie(result.user);
+
     router.push(referer || '/');
   }, [referer, router]);
 
   const logOut = React.useCallback(async () => {
     await auth.signOut();
+    clearTokenCookie();
 
     router.push(`/login?referer=${pathName}`);
   }, [router, pathName]);
 
   React.useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
-      if (firebaseUser && pathName?.startsWith('/login')) {
-        router.push(referer || '/');
+      if (!firebaseUser) {
+        setUser(undefined);
+        clearTokenCookie();
+
+        return;
       }
 
-      setTimeout(() => setIsLoading(false), 1000);
+      setTokenCookie(firebaseUser);
+
+      if (!user) {
+        setUser({
+          uid: firebaseUser.uid,
+          name: firebaseUser.displayName,
+          email: firebaseUser.email!,
+          emailVerified: firebaseUser.emailVerified,
+          photoURL: firebaseUser.photoURL,
+        });
+      }
     });
 
     return unsubscribe;
-  }, [pathName, referer, router]);
-
-  const user = React.useMemo(() => auth.currentUser, []);
+  }, [pathName, referer, router, setUser, user]);
 
   return {
     user,
-    isLoading,
     error,
     logIn,
     logOut,

@@ -7,11 +7,11 @@ import React from 'react';
 import useAuth from '~/shared/hooks/useAuth';
 
 export default function LoginButton() {
-  const { isLoading, error, logIn } = useAuth();
+  const { user, error, logIn } = useAuth();
 
   return (
     <>
-      {isLoading ? (
+      {user ? (
         <div className="flex w-full items-center justify-center">
           <ThreeDots
             height="40"
@@ -25,7 +25,7 @@ export default function LoginButton() {
       ) : (
         <button
           onClick={logIn}
-          className="loading group h-12 rounded-full border-2 border-gray-300 px-6 
+          className="group loading h-12 rounded-full border-2 border-gray-300 px-6 
 transition duration-300 hover:border-pink-500"
         >
           <div className="relative flex items-center justify-center space-x-4">

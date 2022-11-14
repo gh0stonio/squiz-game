@@ -8,7 +8,7 @@ import {
 } from 'firebase/firestore';
 import { cache } from 'react';
 
-import { db, genericConverter } from '~/shared/lib/firebase';
+import { db, genericConverter } from '~/shared/lib/firebaseClient';
 import type { Question, Quiz, Team, User } from '~/shared/types';
 
 const getQuizFromFirebase = cache(
