@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
 // import { BsPlayFill } from 'react-icons/bs';
-// import { HiTrash, HiPencil, HiLink } from 'react-icons/hi';
+import { HiTrash, HiPencil, HiLink } from 'react-icons/hi';
 import React from 'react';
 
 import useQuizzes from '~/admin/hooks/useQuizzes';
@@ -70,14 +70,14 @@ export default function QuizList() {
                             `https://${url.hostname}/login?referer=/quiz/${quiz.id}/lobby`,
                           );
                         }}
-                      />
+                      />*/}
                       <HiPencil
                         className="h-8 w-8 cursor-pointer pl-3 text-gray-400"
                         onClick={() => {
-                          router.push(`/quiz/admin/form/${quiz.id}`);
+                          router.push(`/admin/form?id=${quiz.id}`);
                         }}
                       />
-                       <HiTrash
+                      {/*<HiTrash
                         className="h-8 w-8 cursor-pointer pl-3 text-gray-400"
                         onClick={() => deleteQuiz(quiz.id)}
                       /> */}
