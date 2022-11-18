@@ -9,7 +9,10 @@ import useAuth from '~/shared/hooks/useAuth';
 
 import Logo from '../../../public/logo.png';
 
-export default function NavBar() {
+interface NavBarProps {
+  isAdmin?: boolean;
+}
+export default function NavBar({ isAdmin }: NavBarProps) {
   const { user, logIn, logOut } = useAuth();
   const pathName = usePathname();
 
@@ -18,7 +21,9 @@ export default function NavBar() {
       <div className="navbar-start">
         <div className="flex items-center justify-center">
           <Image src={Logo} alt="logo" height={40} priority />
-          <p className="pl-4 text-2xl font-semibold">Squiz Game</p>
+          <p className="pl-4 text-2xl font-semibold">
+            Squiz Game {isAdmin && ' - Admin'}
+          </p>
         </div>
       </div>
 
