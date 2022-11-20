@@ -12,7 +12,7 @@ import { db, genericConverter } from '~/shared/lib/firebaseClient';
 import type { Question, Quiz, Team, User } from '~/shared/types';
 
 const getQuizFromFirebase = cache(
-  async (id: string, params: { user?: User; forAdmin?: boolean } = {}) => {
+  async (id: string, params: { user?: User; isForAdmin?: boolean } = {}) => {
     // Fetching Quiz document
     const docSnap = await getDoc(
       doc(db, 'quizzes', `${id}`).withConverter(genericConverter<Quiz>()),
@@ -21,7 +21,7 @@ const getQuizFromFirebase = cache(
 
     // Fetching Questions sub-collection
     let questions: Question[] = [];
-    if (params.forAdmin) {
+    if (params.isForAdmin) {
       const questionsQuerySnapshot = await getDocs(
         query(
           collection(db, 'quizzes', docSnap.id, 'questions'),
@@ -46,14 +46,14 @@ const getQuizFromFirebase = cache(
       ...docSnap.data(),
       questions,
       teams,
-      myTeam,
+      ...(params.isForAdmin ? {} : { myTeam }),
     };
   },
 );
 
 export function getQuiz(
   id?: string | null,
-  params?: { user?: User; forAdmin: boolean },
+  params?: { user?: User; isForAdmin: boolean },
 ) {
   if (!id) return;
 

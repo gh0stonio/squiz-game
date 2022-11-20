@@ -2,6 +2,7 @@
 import 'client-only';
 import clsx from 'clsx';
 import { format } from 'date-fns';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 // import { BsPlayFill } from 'react-icons/bs';
 import { HiTrash, HiPencil, HiLink } from 'react-icons/hi';
@@ -11,7 +12,7 @@ import useQuizzes from '~/admin/hooks/useQuizzes';
 
 export default function QuizList() {
   const router = useRouter();
-  const { quizzes } = useQuizzes();
+  const { quizzes, isFetching, isLoading } = useQuizzes();
 
   return (
     <div className="w-full overflow-auto">
@@ -27,7 +28,15 @@ export default function QuizList() {
           </tr>
         </thead>
         <tbody>
-          {quizzes.length > 0 ? (
+          {isFetching || isLoading ? (
+            <tr className="h-12">
+              <td colSpan={7}>
+                <span className="flex w-full items-center justify-center">
+                  Refreshing quizzes ...
+                </span>
+              </td>
+            </tr>
+          ) : quizzes.length > 0 ? (
             quizzes.map((quiz) => {
               return (
                 <tr key={quiz.id} className="h-12">
@@ -71,12 +80,11 @@ export default function QuizList() {
                           );
                         }}
                       />*/}
-                      <HiPencil
-                        className="h-8 w-8 cursor-pointer pl-3 text-gray-400"
-                        onClick={() => {
-                          router.push(`/admin/form?id=${quiz.id}`);
-                        }}
-                      />
+
+                      <Link href={`/admin/form?id=${quiz.id}`}>
+                        <HiPencil className="h-8 w-8 cursor-pointer pl-3 text-gray-400" />
+                      </Link>
+
                       {/*<HiTrash
                         className="h-8 w-8 cursor-pointer pl-3 text-gray-400"
                         onClick={() => deleteQuiz(quiz.id)}

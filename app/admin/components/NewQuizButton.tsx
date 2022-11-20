@@ -1,16 +1,14 @@
 'use client';
 import 'client-only';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 export default function NewQuizButton() {
   const router = useRouter();
 
   return (
-    <button
-      className="btn-secondary btn-sm btn"
-      onClick={() => router.push('/admin/form')}
-    >
+    <Link href="/admin/form" className="btn-secondary btn-sm btn">
       New Quiz
-    </button>
+    </Link>
   );
 }

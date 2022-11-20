@@ -28,7 +28,8 @@ export default function useQuizzes() {
     queryFn: getQuizzes,
     initialData: quizzes,
     enabled: !!quizzes,
-    staleTime: 1000,
+    staleTime: Infinity,
+    cacheTime: Infinity,
   });
 
   // Clearing server cache avoiding outdated data
