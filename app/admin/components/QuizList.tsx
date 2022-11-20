@@ -12,7 +12,7 @@ import useQuizzes from '~/admin/hooks/useQuizzes';
 
 export default function QuizList() {
   const router = useRouter();
-  const { quizzes, isFetching, isLoading } = useQuizzes();
+  const { quizzes, isFetching, isLoading, deleteQuiz } = useQuizzes();
 
   return (
     <div className="w-full overflow-auto">
@@ -70,7 +70,7 @@ export default function QuizList() {
                         onClick={() => {
                           router.push(`/quiz/admin/play/${quiz.id}/lobby`);
                         }}
-                      />
+                      />*/}
                       <HiLink
                         className="h-8 w-8 cursor-pointer pl-3 text-gray-400"
                         onClick={() => {
@@ -79,16 +79,15 @@ export default function QuizList() {
                             `https://${url.hostname}/login?referer=/quiz/${quiz.id}/lobby`,
                           );
                         }}
-                      />*/}
+                      />
 
                       <Link href={`/admin/form?id=${quiz.id}`}>
                         <HiPencil className="h-8 w-8 cursor-pointer pl-3 text-gray-400" />
                       </Link>
-
-                      {/*<HiTrash
+                      <HiTrash
                         className="h-8 w-8 cursor-pointer pl-3 text-gray-400"
                         onClick={() => deleteQuiz(quiz.id)}
-                      /> */}
+                      />
                     </div>
                   </td>
                 </tr>
