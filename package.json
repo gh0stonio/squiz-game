@@ -42,5 +42,8 @@
     "prettier-plugin-tailwindcss": "^0.1.13",
     "server-only": "^0.0.1",
     "typescript": "4.8.4"
+  },
+  "volta": {
+    "node": "18.0.0"
   }
 }
