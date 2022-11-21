@@ -7,10 +7,9 @@ export default function AdminQuizFormPage() {
   return (
     <div className="flex h-full w-full flex-col p-10">
       <FormTitle />
+      <QuizForm />
 
-      <div className="pt-6">
-        <QuizForm />
-      </div>
+      <div id="question-form-modal" />
     </div>
   );
 }

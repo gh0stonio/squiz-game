@@ -7,6 +7,8 @@ import React from 'react';
 import useQuiz from '~/admin/hooks/useQuiz';
 import { Quiz } from '~/shared/types';
 
+import QuestionList from './QuestionList';
+
 type QuizFormProps = {};
 type QuizFormInputs = Pick<Quiz, 'name' | 'description' | 'maxMembersPerTeam'>;
 
@@ -70,26 +72,26 @@ export default function QuizForm({}: QuizFormProps) {
           </div>
         </div>
 
-        <div>
-          <div className="w-12/12 form-control pt-2">
-            <label className="label">
-              <span className="label-text text-lg font-semibold">
-                Description*
-              </span>
-              {errors.description && (
-                <span className="label-text-alt">This field is required</span>
-              )}
-            </label>
-            <input
-              type="text"
-              defaultValue={quiz?.description}
-              className={clsx('input-bordered input', {
-                'input-error': !!errors.description,
-              })}
-              {...register('description', { required: true })}
-            />
-          </div>
+        <div className="w-12/12 form-control pt-2">
+          <label className="label">
+            <span className="label-text text-lg font-semibold">
+              Description*
+            </span>
+            {errors.description && (
+              <span className="label-text-alt">This field is required</span>
+            )}
+          </label>
+          <input
+            type="text"
+            defaultValue={quiz?.description}
+            className={clsx('input-bordered input', {
+              'input-error': !!errors.description,
+            })}
+            {...register('description', { required: true })}
+          />
         </div>
+
+        <QuestionList />
 
         <div className="flex items-center justify-between pt-10">
           {isSubmitting ? (
