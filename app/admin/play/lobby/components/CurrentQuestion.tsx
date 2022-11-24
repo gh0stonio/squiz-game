@@ -1,6 +1,7 @@
 'use client';
 import 'client-only';
 import clsx from 'clsx';
+import { intervalToDuration } from 'date-fns';
 import React from 'react';
 import { match } from 'ts-pattern';
 
@@ -11,6 +12,12 @@ export default function CurrentQuestion() {
   const { quiz, currentQuestion, pushQuestion, sendQuestionExpired } =
     useQuiz();
   const timer = useTimer(currentQuestion);
+  const duration = timer.timeLeft
+    ? intervalToDuration({
+        start: 0,
+        end: timer.timeLeft * 1000,
+      })
+    : undefined;
 
   React.useEffect(() => {
     timer.setIsExpired(false);
@@ -62,7 +69,19 @@ export default function CurrentQuestion() {
 
       {match(currentQuestion)
         .with({ status: 'in progress' }, () => {
-          return <div>Time left: {timer.timeLeft}</div>;
+          return (
+            <div>
+              Time left:{' '}
+              <span className="countdown font-mono">
+                {/* 
+                // @ts-ignore */}
+                <span style={{ '--value': duration?.minutes || 0 }}></span>:
+                {/* 
+                // @ts-ignore */}
+                <span style={{ '--value': duration?.seconds }}></span>
+              </span>
+            </div>
+          );
         })
         .with({ status: 'correcting' }, () => {
           return <div className="h-full py-6">Correction screen</div>;

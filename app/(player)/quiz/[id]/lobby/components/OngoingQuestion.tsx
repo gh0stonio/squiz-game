@@ -1,5 +1,6 @@
 'use client';
 import 'client-only';
+import { intervalToDuration } from 'date-fns';
 import React from 'react';
 
 import useQuiz from '~/(player)/quiz/[id]/hooks/useQuiz';
@@ -13,6 +14,12 @@ interface OngoingQuestionProps {
 export default function OngoingQuestion({ question }: OngoingQuestionProps) {
   const { quiz } = useQuiz();
   const timer = useTimer(question);
+  const duration = timer.timeLeft
+    ? intervalToDuration({
+        start: 0,
+        end: timer.timeLeft * 1000,
+      })
+    : undefined;
 
   return (
     <>
@@ -21,7 +28,17 @@ export default function OngoingQuestion({ question }: OngoingQuestionProps) {
           Question {question.order}/{quiz?.questionsTotalCount} -{' '}
           {question.text}
         </h2>
-        <span>Time left: {timer.timeLeft}</span>
+        <span>
+          Time left:{' '}
+          <span className="countdown font-mono">
+            {/* 
+                // @ts-ignore */}
+            <span style={{ '--value': duration?.minutes || 0 }}></span>:
+            {/* 
+                // @ts-ignore */}
+            <span style={{ '--value': duration?.seconds }}></span>
+          </span>
+        </span>
       </div>
 
       <textarea className="textarea-bordered textarea h-60" name="answer" />
