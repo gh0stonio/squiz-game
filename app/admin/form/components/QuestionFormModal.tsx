@@ -6,7 +6,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import React from 'react';
 import { uid } from 'uid';
 
-import useQuiz from '~/admin/hooks/useQuiz';
+import useQuizQuestion from '~/admin/hooks/useQuizQuestion';
 import type { Question } from '~/shared/types';
 
 export type QuestionFormInputs = Pick<
@@ -22,7 +22,7 @@ export default function QuestionFormModal({
   onClose,
   question,
 }: QuestionFormProps) {
-  const { editQuestion, addQuestion } = useQuiz();
+  const { editQuestion, addQuestion } = useQuizQuestion();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const isEdit = !!question;

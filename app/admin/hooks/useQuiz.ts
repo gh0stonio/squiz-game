@@ -8,8 +8,6 @@ import {
   collection,
   deleteDoc,
   getDocs,
-  orderBy,
-  query,
 } from 'firebase/firestore';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'react-toastify';
@@ -133,61 +131,10 @@ export default function useQuiz() {
     [quizId, result.data, router],
   );
 
-  /**
-   * Questions handling
-   */
-  const deleteQuestion = React.useCallback(
-    (questionId: string) => {
-      queryClient.setQueryData<Quiz>(['quiz', quizId], (_quiz) => {
-        if (!_quiz) return;
-
-        return {
-          ..._quiz,
-          questions: (_quiz.questions || []).filter(
-            (_question) => _question.id !== questionId,
-          ),
-        };
-      });
-    },
-    [quizId],
-  );
-  const addQuestion = React.useCallback(
-    (question: Question) => {
-      queryClient.setQueryData<Quiz>(['quiz', quizId], (_quiz) => {
-        if (!_quiz) return;
-
-        return {
-          ..._quiz,
-          questions: [...(_quiz.questions || []), question],
-        };
-      });
-    },
-    [quizId],
-  );
-  const editQuestion = React.useCallback(
-    (question: Question) => {
-      queryClient.setQueryData<Quiz>(['quiz', quizId], (_quiz) => {
-        if (!_quiz) return;
-
-        return {
-          ..._quiz,
-          questions: (_quiz.questions || []).map((_question) =>
-            _question.id === question.id ? question : _question,
-          ),
-        };
-      });
-    },
-    [quizId],
-  );
-
   return {
     quiz: result.data,
     isLoading: result.isLoading,
     isFetching: result.isFetching,
     saveQuiz,
-    questions: result.data?.questions || [],
-    addQuestion,
-    editQuestion,
-    deleteQuestion,
   };
 }
