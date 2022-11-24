@@ -22,7 +22,7 @@ export default function QuestionFormModal({
   onClose,
   question,
 }: QuestionFormProps) {
-  const { editQuestion, addQuestion } = useQuizQuestion();
+  const { questions, editQuestion, addQuestion } = useQuizQuestion();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const isEdit = !!question;
@@ -45,6 +45,7 @@ export default function QuestionFormModal({
       ? { ...question, ...data, updatedAt: Date.now() }
       : {
           id: uid(16),
+          order: questions.length + 1,
           status: 'ready',
           createdAt: Date.now(),
           ...data,

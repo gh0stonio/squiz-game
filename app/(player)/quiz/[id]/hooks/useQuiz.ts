@@ -1,7 +1,13 @@
 'use client';
 import 'client-only';
 import { useQuery } from '@tanstack/react-query';
-import { onSnapshot, doc, collection, query } from 'firebase/firestore';
+import {
+  onSnapshot,
+  doc,
+  collection,
+  query,
+  orderBy,
+} from 'firebase/firestore';
 import React from 'react';
 
 import { queryClient, QueryContext } from '~/(player)/quiz/[id]/QueryContext';
@@ -77,9 +83,10 @@ export default function useQuiz() {
     if (!result.data?.id) return;
 
     const quizQuestionsQuery = query(
-      collection(db, 'quizzes', `${result.data.id}`, 'questions').withConverter(
-        genericConverter<Question>(),
-      ),
+      query(
+        collection(db, 'quizzes', `${result.data.id}`, 'questions'),
+        orderBy('order'),
+      ).withConverter(genericConverter<Question>()),
     );
     const unsubscribe = onSnapshot(quizQuestionsQuery, (questionsSnapshot) => {
       const questions = questionsSnapshot.docs.map((doc) => doc.data());

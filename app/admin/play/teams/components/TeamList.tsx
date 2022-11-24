@@ -7,8 +7,6 @@ import useQuiz from '~/admin/shared/hooks/useQuiz';
 export default function TeamList() {
   const { quiz } = useQuiz();
 
-  console.log(quiz);
-
   return (
     <div className="relative h-full w-full">
       <div className="absolute top-0 left-0 right-0 bottom-0 flex h-full w-full flex-col">

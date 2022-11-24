@@ -16,7 +16,7 @@ export async function getQuizzes() {
     const questionsQuerySnapshot = await getDocs(
       query(
         collection(db, 'quizzes', quizDoc.id, 'questions'),
-        orderBy('createdAt'),
+        orderBy('order'),
       ).withConverter(genericConverter<Question>()),
     );
 

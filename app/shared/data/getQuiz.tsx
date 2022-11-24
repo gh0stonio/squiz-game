@@ -23,7 +23,7 @@ const getQuizFromFirebase = cache(
     const questionsQuerySnapshot = await getDocs(
       query(
         collection(db, 'quizzes', docSnap.id, 'questions'),
-        orderBy('createdAt'),
+        orderBy('order'),
       ).withConverter(genericConverter<Question>()),
     );
     const questions = questionsQuerySnapshot.docs.map((doc) => doc.data());
@@ -46,7 +46,7 @@ const getQuizFromFirebase = cache(
     return {
       ...docSnap.data(),
       questions: params.isForAdmin ? questions : [],
-      ongoingQuestion,
+      ...(ongoingQuestion ? { ongoingQuestion } : {}),
       teams,
       ...(params.isForAdmin ? {} : { myTeam }),
     };

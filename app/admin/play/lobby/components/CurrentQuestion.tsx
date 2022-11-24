@@ -25,7 +25,9 @@ export default function CurrentQuestion() {
   return (
     <div className="flex h-full flex-col">
       <div className="flex w-full">
-        <h3 className="w-full text-2xl font-bold">Current Question</h3>
+        <h3 className="w-full text-2xl font-bold">
+          Current Question - {currentQuestion.order}/{quiz?.questionsTotalCount}
+        </h3>
         <button
           className={clsx('btn btn-secondary btn-sm', {
             'btn-disabled':

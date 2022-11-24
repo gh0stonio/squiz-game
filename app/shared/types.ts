@@ -17,6 +17,7 @@ export interface Team {
 
 export interface Question {
   id: string;
+  order: number;
   text: string;
   answer: string;
   duration: number;
@@ -36,6 +37,7 @@ export interface Quiz {
   updatedAt?: number;
 
   questions?: Question[];
+  questionsTotalCount: number;
   ongoingQuestion?: Question;
 
   maxMembersPerTeam: number;

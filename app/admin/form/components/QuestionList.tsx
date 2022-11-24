@@ -19,7 +19,9 @@ export default function QuestionList({}: QuestionListProps) {
     <div className="relative h-full w-full">
       <div className="absolute top-0 left-0 right-0 bottom-0 flex h-full w-full flex-col pt-8">
         <div className="flex w-full items-center justify-between">
-          <h3 className="pb-2 text-lg font-bold">Questions</h3>
+          <h3 className="pb-2 text-lg font-bold">
+            {questions.length} Question{questions.length > 1 ? 's' : ''}
+          </h3>
 
           <button
             type="button"
@@ -44,10 +46,10 @@ export default function QuestionList({}: QuestionListProps) {
             </thead>
             <tbody>
               {questions.length > 0 ? (
-                questions.map((question, index) => {
+                questions.map((question) => {
                   return (
                     <tr key={question.id} className="h-12">
-                      <td>{index + 1}</td>
+                      <td>{question.order}</td>
                       <td>{question.text}</td>
                       <td className="text-center">{question.duration}</td>
                       <td className="text-center">{question.maxPoints}</td>

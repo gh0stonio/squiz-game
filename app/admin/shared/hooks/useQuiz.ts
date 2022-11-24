@@ -71,6 +71,11 @@ export default function useQuiz() {
       const isEdit = !!quiz;
       const saveDoc = isEdit ? updateDoc : setDoc;
 
+      const questions = queryClient.getQueryData<Quiz>([
+        'quiz',
+        quizId,
+      ])?.questions;
+
       const savingQuiz: Quiz = isEdit
         ? {
             ...quiz,
@@ -79,9 +84,16 @@ export default function useQuiz() {
               values.maxMembersPerTeam.toString(),
               10,
             ),
+            questionsTotalCount: (questions || []).length,
             updatedAt: Date.now(),
           }
-        : { ...values, id, status: 'ready', createdAt: Date.now() };
+        : {
+            ...values,
+            id,
+            status: 'ready',
+            createdAt: Date.now(),
+            questionsTotalCount: (questions || []).length,
+          };
 
       delete savingQuiz.questions;
       delete savingQuiz.teams;
@@ -105,10 +117,6 @@ export default function useQuiz() {
             });
           }
 
-          const questions = queryClient.getQueryData<Quiz>([
-            'quiz',
-            quizId,
-          ])?.questions;
           if (questions) {
             return Promise.all(
               questions.map((question) =>
