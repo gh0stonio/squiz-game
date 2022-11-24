@@ -8,6 +8,8 @@ import {
   collection,
   deleteDoc,
   getDocs,
+  onSnapshot,
+  query,
 } from 'firebase/firestore';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'react-toastify';
@@ -17,7 +19,7 @@ import { uid } from 'uid';
 import { queryClient, QueryContext } from '~/admin/QueryContext';
 import { getQuiz } from '~/shared/data/getQuiz';
 import { db, genericConverter } from '~/shared/lib/firebaseClient';
-import { Question, Quiz } from '~/shared/types';
+import { Question, Quiz, Team } from '~/shared/types';
 
 export default function useQuiz() {
   const router = useRouter();
@@ -40,6 +42,26 @@ export default function useQuiz() {
   if (!process.browser) {
     queryClient.clear();
   }
+
+  // Listening for quiz teams changes
+  React.useEffect(() => {
+    if (!result.data?.id) return;
+
+    const quizTeamsQuery = query(
+      collection(db, 'quizzes', `${result.data.id}`, 'teams').withConverter(
+        genericConverter<Team>(),
+      ),
+    );
+    const unsubscribe = onSnapshot(quizTeamsQuery, (teamsSnapshot) => {
+      const teams = teamsSnapshot.docs.map((doc) => doc.data());
+
+      queryClient.setQueryData<Quiz>(['quiz', quizId], (oldData) =>
+        oldData ? { ...oldData, teams } : undefined,
+      );
+    });
+
+    return unsubscribe;
+  }, [quizId, result.data?.id]);
 
   const saveQuiz = React.useCallback(
     (values: Pick<Quiz, 'name' | 'description' | 'maxMembersPerTeam'>) => {

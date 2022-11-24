@@ -1,7 +1,7 @@
 import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 
 import { db, genericConverter } from '~/shared/lib/firebaseClient';
-import type { Question, Quiz } from '~/shared/types';
+import type { Question, Quiz, Team } from '~/shared/types';
 
 export async function getQuizzes() {
   // Fetching Quiz collection
@@ -20,11 +20,18 @@ export async function getQuizzes() {
       ).withConverter(genericConverter<Question>()),
     );
 
+    const teamsQuerySnapshot = await getDocs(
+      collection(db, 'quizzes', quizDoc.id, 'teams').withConverter(
+        genericConverter<Team>(),
+      ),
+    );
+
     const quiz: Quiz = {
       ...quizDoc.data(),
       questions: questionsQuerySnapshot.docs.map((questionDoc) =>
         questionDoc.data(),
       ),
+      teams: teamsQuerySnapshot.docs.map((teamDoc) => teamDoc.data()),
     };
 
     return quiz;
