@@ -25,14 +25,14 @@ export default async function PlayerLayout({
   }
 
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center">
-      <QueryContext initialData={{ quiz }}>
+    <QueryContext initialData={{ quiz }}>
+      <div className="flex h-full w-full flex-col items-center justify-center">
         <NavBar />
 
         <div className="m-auto mb-10 h-5/6 w-[95%] rounded-xl bg-gray-100 shadow-xl">
           {children}
         </div>
-      </QueryContext>
-    </div>
+      </div>
+    </QueryContext>
   );
 }

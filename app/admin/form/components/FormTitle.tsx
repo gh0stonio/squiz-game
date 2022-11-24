@@ -1,10 +1,9 @@
 'use client';
 import 'client-only';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { BiArrowBack } from 'react-icons/bi';
 
-import useQuiz from '~/admin/hooks/useQuiz';
+import useQuiz from '~/admin/shared/hooks/useQuiz';
 
 export default function QuizFormTitle() {
   const { quiz } = useQuiz();

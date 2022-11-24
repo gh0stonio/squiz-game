@@ -4,11 +4,11 @@ import clsx from 'clsx';
 import { format } from 'date-fns';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-// import { BsPlayFill } from 'react-icons/bs';
+import { BsPlayFill } from 'react-icons/bs';
 import { HiTrash, HiPencil, HiLink } from 'react-icons/hi';
 import React from 'react';
 
-import useQuizzes from '~/admin/hooks/useQuizzes';
+import useQuizzes from '~/admin/shared/hooks/useQuizzes';
 
 export default function QuizList() {
   const router = useRouter();
@@ -65,12 +65,9 @@ export default function QuizList() {
                   </td>
                   <td>
                     <div className="flex justify-end">
-                      {/* <BsPlayFill
-                        className="h-8 w-9 cursor-pointer pl-3 text-gray-400"
-                        onClick={() => {
-                          router.push(`/quiz/admin/play/${quiz.id}/lobby`);
-                        }}
-                      />*/}
+                      <Link href={`/admin/play/lobby?id=${quiz.id}`}>
+                        <BsPlayFill className="h-8 w-8 cursor-pointer pl-3 text-gray-400" />
+                      </Link>
                       <HiLink
                         className="h-8 w-8 cursor-pointer pl-3 text-gray-400"
                         onClick={() => {

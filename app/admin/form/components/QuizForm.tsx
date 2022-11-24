@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import React from 'react';
 
-import useQuiz from '~/admin/hooks/useQuiz';
+import useQuiz from '~/admin/shared/hooks/useQuiz';
 import { Quiz } from '~/shared/types';
 
 import QuestionList from './QuestionList';
@@ -95,12 +95,12 @@ export default function QuizForm({}: QuizFormProps) {
 
         <div className="flex items-center justify-between pt-10">
           {isSubmitting ? (
-            <button className="btn-disabled loading btn-square btn-sm btn" />
+            <button className="btn btn-disabled loading btn-sm btn-square" />
           ) : (
             <button
               type="submit"
               onClick={handleSubmit(onSubmit)}
-              className="btn-secondary btn-sm btn"
+              className="btn btn-secondary btn-sm"
             >
               {quiz ? 'Update' : 'Create'}
             </button>

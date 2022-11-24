@@ -4,7 +4,7 @@ import { format } from 'date-fns';
 import { HiTrash, HiPencil } from 'react-icons/hi';
 import React from 'react';
 
-import useQuizQuestion from '~/admin/hooks/useQuizQuestion';
+import useQuizQuestion from '~/admin/shared/hooks/useQuizQuestion';
 import type { Question } from '~/shared/types';
 
 import QuestionFormModal from './QuestionFormModal';
@@ -23,7 +23,7 @@ export default function QuestionList({}: QuestionListProps) {
 
           <button
             type="button"
-            className="btn-accent btn-sm btn mb-6"
+            className="btn btn-accent btn-sm mb-6"
             onClick={() => setIsFormModalOpen(true)}
           >
             Add Question

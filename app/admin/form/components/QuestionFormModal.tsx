@@ -6,7 +6,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import React from 'react';
 import { uid } from 'uid';
 
-import useQuizQuestion from '~/admin/hooks/useQuizQuestion';
+import useQuizQuestion from '~/admin/shared/hooks/useQuizQuestion';
 import type { Question } from '~/shared/types';
 
 export type QuestionFormInputs = Pick<
@@ -136,16 +136,16 @@ export default function QuestionFormModal({
           </div>
 
           <div className="mt-10 flex items-center justify-between">
-            <button className="btn-sm btn" onClick={closeModal}>
+            <button className="btn btn-sm" onClick={closeModal}>
               Cancel
             </button>
             {isSubmitting ? (
-              <button className="btn-disabled loading btn-square btn-sm btn" />
+              <button className="btn btn-disabled loading btn-sm btn-square" />
             ) : (
               <input
                 type="submit"
                 onClick={handleSubmit(onSubmitForm)}
-                className="btn-accent btn-sm btn"
+                className="btn btn-accent btn-sm"
               />
             )}
           </div>

@@ -11,13 +11,14 @@ export default async function AdminLayout({
   const quizzes = await getQuizzes();
 
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center">
-      <NavBar isAdmin />
-      <div className="m-auto mb-10 h-5/6 w-[95%] rounded-xl bg-gray-100 shadow-xl">
-        <div className="h-full w-full">
-          <QueryContext initialData={{ quizzes }}>{children}</QueryContext>
+    <QueryContext initialData={{ quizzes }}>
+      <div className="flex h-full w-full flex-col items-center justify-center">
+        <NavBar isAdmin />
+
+        <div className="m-auto mb-10 h-5/6 w-[95%] rounded-xl bg-gray-100 shadow-xl">
+          <div className="h-full w-full">{children}</div>
         </div>
       </div>
-    </div>
+    </QueryContext>
   );
 }
