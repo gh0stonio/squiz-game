@@ -3,7 +3,7 @@ import 'client-only';
 import clsx from 'clsx';
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { HiOutlineUser } from 'react-icons/hi';
 import React from 'react';
 
@@ -18,14 +18,13 @@ interface NavBarProps {
 export default function NavBar({ isAdmin }: NavBarProps) {
   const { user, logIn, logOut } = useAuth();
   const { quiz } = useQuiz();
+
+  const searchParams = useSearchParams();
   const pathName = usePathname();
 
-  const adminQuizPath = React.useMemo(() => {
-    const parts = pathName?.split('/') || [];
-    parts.pop();
-
-    return parts.join('/');
-  }, [pathName]);
+  const quizId = quiz.id || searchParams.get('id');
+  const shouldDisplayCenterNav =
+    pathName?.includes('lobby') || pathName?.includes('teams');
 
   return (
     <div className="navbar my-10 w-[95%] rounded-xl bg-gray-100 px-4">
@@ -38,26 +37,36 @@ export default function NavBar({ isAdmin }: NavBarProps) {
         </div>
       </div>
 
-      <div className="navbar-center lg:flex">
-        <div className="btn-group">
-          <Link
-            className={clsx('btn no-animation', {
-              'btn-active': pathName?.includes('lobby'),
-            })}
-            href={isAdmin ? `${adminQuizPath}/lobby` : `/quiz/${quiz.id}/lobby`}
-          >
-            Lobby
-          </Link>
-          <Link
-            className={clsx('btn no-animation', {
-              'btn-active': pathName?.includes('teams'),
-            })}
-            href={isAdmin ? `${adminQuizPath}/teams` : `/quiz/${quiz.id}/teams`}
-          >
-            Teams
-          </Link>
+      {shouldDisplayCenterNav && (
+        <div className="navbar-center lg:flex">
+          <div className="btn-group">
+            <Link
+              className={clsx('btn no-animation', {
+                'btn-active': pathName?.includes('lobby'),
+              })}
+              href={
+                isAdmin
+                  ? `/admin/play/lobby?id=${quizId}`
+                  : `/quiz/${quizId}/lobby`
+              }
+            >
+              Lobby
+            </Link>
+            <Link
+              className={clsx('btn no-animation', {
+                'btn-active': pathName?.includes('teams'),
+              })}
+              href={
+                isAdmin
+                  ? `/admin/play/teams?id=${quizId}`
+                  : `/quiz/${quizId}/teams`
+              }
+            >
+              Teams
+            </Link>
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="navbar-end">
         <div className="flex-none">

@@ -131,10 +131,64 @@ export default function useQuiz() {
     [quizId, result.data, router],
   );
 
+  const updateStatus = React.useCallback(
+    async (status: Quiz['status']) => {
+      if (!result.data) return;
+
+      // removing sub_collections to avoid storing them inside the quiz attribute in Firestore
+      const quiz = { ...result.data, status };
+      delete quiz.questions;
+      delete quiz.teams;
+
+      await updateDoc(
+        doc(db, 'quizzes', quiz.id).withConverter(genericConverter<Quiz>()),
+        quiz,
+      );
+
+      queryClient.setQueryData<Quiz>(['quiz', quizId], (oldData) =>
+        oldData ? { ...oldData, status } : oldData,
+      );
+    },
+    [quizId, result.data],
+  );
+
+  const start = React.useCallback(() => {
+    if (!result.data) return;
+
+    return updateStatus('in progress');
+  }, [result.data, updateStatus]);
+
+  const end = React.useCallback(async () => {
+    if (!result.data) return;
+    return updateStatus('finished');
+  }, [result.data, updateStatus]);
+
+  const reset = React.useCallback(async () => {
+    if (!result.data || !quizId) return;
+
+    await Promise.all(
+      (result.data.questions || []).map((question) => {
+        delete question.startedAt;
+
+        setDoc(
+          doc(db, 'quizzes', quizId, 'questions', question.id).withConverter(
+            genericConverter<Question>(),
+          ),
+          { ...question, status: 'ready' },
+        );
+      }),
+    );
+
+    return updateStatus('ready');
+  }, [quizId, result.data, updateStatus]);
+
   return {
     quiz: result.data,
     isLoading: result.isLoading,
     isFetching: result.isFetching,
     saveQuiz,
+    start,
+    end,
+    reset,
   };
 }
