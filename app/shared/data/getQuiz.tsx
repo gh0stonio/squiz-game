@@ -20,16 +20,17 @@ const getQuizFromFirebase = cache(
     if (!docSnap.exists()) return;
 
     // Fetching Questions sub-collection
-    let questions: Question[] = [];
-    if (params.isForAdmin) {
-      const questionsQuerySnapshot = await getDocs(
-        query(
-          collection(db, 'quizzes', docSnap.id, 'questions'),
-          orderBy('createdAt'),
-        ).withConverter(genericConverter<Question>()),
-      );
-      questions = questionsQuerySnapshot.docs.map((doc) => doc.data());
-    }
+    const questionsQuerySnapshot = await getDocs(
+      query(
+        collection(db, 'quizzes', docSnap.id, 'questions'),
+        orderBy('createdAt'),
+      ).withConverter(genericConverter<Question>()),
+    );
+    const questions = questionsQuerySnapshot.docs.map((doc) => doc.data());
+    const ongoingQuestion = questions.find(
+      (_question) =>
+        _question.status === 'in progress' || _question.status === 'correcting',
+    );
 
     // Fetching Teams sub-collection
     const teamsQuerySnapshot = await getDocs(
@@ -44,7 +45,8 @@ const getQuizFromFirebase = cache(
 
     return {
       ...docSnap.data(),
-      questions,
+      questions: params.isForAdmin ? questions : [],
+      ongoingQuestion,
       teams,
       ...(params.isForAdmin ? {} : { myTeam }),
     };

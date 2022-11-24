@@ -173,18 +173,41 @@ export default function useQuiz() {
     },
     [quizId, result.data],
   );
-
   const start = React.useCallback(() => {
     if (!result.data) return;
 
     return updateStatus('in progress');
   }, [result.data, updateStatus]);
-
   const end = React.useCallback(async () => {
-    if (!result.data) return;
-    return updateStatus('finished');
-  }, [result.data, updateStatus]);
+    if (!result.data || !quizId) return;
 
+    await Promise.all(
+      (result.data.questions || []).map((question) => {
+        delete question.startedAt;
+
+        setDoc(
+          doc(db, 'quizzes', quizId, 'questions', question.id).withConverter(
+            genericConverter<Question>(),
+          ),
+          { ...question, status: 'done' },
+        );
+      }),
+    );
+
+    queryClient.setQueryData<Quiz>(
+      ['quiz', quizId],
+      (oldData) =>
+        oldData && {
+          ...oldData,
+          questions: oldData.questions?.map((_question) => ({
+            ..._question,
+            status: 'done',
+          })),
+        },
+    );
+
+    return updateStatus('finished');
+  }, [quizId, result.data, updateStatus]);
   const reset = React.useCallback(async () => {
     if (!result.data || !quizId) return;
 
@@ -201,8 +224,103 @@ export default function useQuiz() {
       }),
     );
 
+    queryClient.setQueryData<Quiz>(
+      ['quiz', quizId],
+      (oldData) =>
+        oldData && {
+          ...oldData,
+          questions: oldData.questions?.map((_question) => ({
+            ..._question,
+            status: 'ready',
+          })),
+        },
+    );
+
     return updateStatus('ready');
   }, [quizId, result.data, updateStatus]);
+
+  const currentQuestion = React.useMemo(() => {
+    if (!result.data?.questions) return;
+
+    const onGoingQuestion = result.data.questions.find(
+      (question) =>
+        question.status === 'in progress' || question.status === 'correcting',
+    );
+
+    if (onGoingQuestion) return onGoingQuestion;
+
+    return (result.data.questions
+      .sort()
+      .filter((question) => question.status === 'ready') || [])[0];
+  }, [result.data?.questions]);
+  const nextQuestion = React.useMemo(() => {
+    return ((result.data?.questions || [])
+      .sort()
+      .filter((question) => question.status === 'ready') || [])[
+      currentQuestion && currentQuestion.status === 'ready' ? 1 : 0
+    ];
+  }, [result.data?.questions, currentQuestion]);
+  const pushQuestion = React.useCallback(async () => {
+    if (!result.data || !currentQuestion) return;
+
+    const updatedQuestion: Question = {
+      ...currentQuestion,
+      status: 'in progress',
+      startedAt: Date.now(),
+    };
+
+    await setDoc(
+      doc(
+        db,
+        'quizzes',
+        result.data.id,
+        'questions',
+        currentQuestion.id,
+      ).withConverter(genericConverter<Question>()),
+      updatedQuestion,
+    );
+
+    queryClient.setQueryData<Quiz>(
+      ['quiz', quizId],
+      (oldData) =>
+        oldData && {
+          ...oldData,
+          questions: oldData.questions?.map((_question) =>
+            _question.id === currentQuestion.id ? updatedQuestion : _question,
+          ),
+        },
+    );
+  }, [currentQuestion, quizId, result.data]);
+  const sendQuestionExpired = React.useCallback(async () => {
+    if (!result.data || !currentQuestion) return;
+
+    const updatedQuestion: Question = {
+      ...currentQuestion,
+      status: 'correcting',
+    };
+
+    await setDoc(
+      doc(
+        db,
+        'quizzes',
+        result.data.id,
+        'questions',
+        currentQuestion.id,
+      ).withConverter(genericConverter<Question>()),
+      updatedQuestion,
+    );
+
+    queryClient.setQueryData<Quiz>(
+      ['quiz', quizId],
+      (oldData) =>
+        oldData && {
+          ...oldData,
+          questions: oldData.questions?.map((_question) =>
+            _question.id === currentQuestion.id ? updatedQuestion : _question,
+          ),
+        },
+    );
+  }, [currentQuestion, quizId, result.data]);
 
   return {
     quiz: result.data,
@@ -212,5 +330,9 @@ export default function useQuiz() {
     start,
     end,
     reset,
+    currentQuestion,
+    nextQuestion,
+    pushQuestion,
+    sendQuestionExpired,
   };
 }

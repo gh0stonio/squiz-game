@@ -8,7 +8,7 @@ import { queryClient, QueryContext } from '~/(player)/quiz/[id]/QueryContext';
 import { getQuiz } from '~/shared/data/getQuiz';
 import useAuth from '~/shared/hooks/useAuth';
 import { db, genericConverter } from '~/shared/lib/firebaseClient';
-import type { Quiz, Team } from '~/shared/types';
+import type { Question, Quiz, Team } from '~/shared/types';
 
 const queryKey = ['quiz'];
 
@@ -66,6 +66,32 @@ export default function useQuiz() {
 
       queryClient.setQueryData<Quiz>(queryKey, (oldData) =>
         oldData ? { ...oldData, teams, myTeam } : undefined,
+      );
+    });
+
+    return unsubscribe;
+  }, [result.data?.id, user?.name]);
+
+  // Listening for quiz questions changes (only to get ongoingQuestion)
+  React.useEffect(() => {
+    if (!result.data?.id) return;
+
+    const quizQuestionsQuery = query(
+      collection(db, 'quizzes', `${result.data.id}`, 'questions').withConverter(
+        genericConverter<Question>(),
+      ),
+    );
+    const unsubscribe = onSnapshot(quizQuestionsQuery, (questionsSnapshot) => {
+      const questions = questionsSnapshot.docs.map((doc) => doc.data());
+      const ongoingQuestion = questions.find(
+        (_question) =>
+          _question.status === 'in progress' ||
+          _question.status === 'correcting',
+      );
+
+      queryClient.setQueryData<Quiz>(
+        queryKey,
+        (oldData) => oldData && { ...oldData, ongoingQuestion },
       );
     });
 

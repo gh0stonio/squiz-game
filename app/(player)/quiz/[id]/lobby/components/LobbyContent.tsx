@@ -4,6 +4,9 @@ import { match, P } from 'ts-pattern';
 
 import useQuiz from '~/(player)/quiz/[id]/hooks/useQuiz';
 
+import Correction from './Correction';
+import OngoingQuestion from './OngoingQuestion';
+
 export default function LobbyContent() {
   const { quiz } = useQuiz();
 
@@ -25,7 +28,12 @@ export default function LobbyContent() {
     )
     .with(
       { status: 'in progress', ongoingQuestion: P.not(P.nullish) },
-      ({ ongoingQuestion }) => <p>ongoing question {ongoingQuestion.text}</p>,
+      ({ ongoingQuestion }) =>
+        ongoingQuestion.status === 'correcting' ? (
+          <Correction question={ongoingQuestion} />
+        ) : (
+          <OngoingQuestion question={ongoingQuestion} />
+        ),
     )
     .with({ status: 'finished' }, () => {
       return <p>Quiz over, thanks for your participation!</p>;
