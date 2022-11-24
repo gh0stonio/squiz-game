@@ -3,6 +3,7 @@ import React from 'react';
 
 import NavBar from '~/shared/components/NavBar';
 import { getQuiz } from '~/shared/data/getQuiz';
+import { getUser } from '~/shared/data/getUser';
 
 import QueryContext from './QueryContext';
 
@@ -10,7 +11,8 @@ export default async function PlayerLayout({
   children,
   params,
 }: React.PropsWithChildren<{ params: { id: string } }>) {
-  const quiz = await getQuiz(params.id);
+  const user = await getUser();
+  const quiz = await getQuiz(params.id, { user });
 
   if (!quiz) {
     return (
@@ -24,9 +26,9 @@ export default async function PlayerLayout({
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-center">
-      <NavBar />
-
       <QueryContext initialData={{ quiz }}>
+        <NavBar />
+
         <div className="m-auto mb-10 h-5/6 w-[95%] rounded-xl bg-gray-100 shadow-xl">
           {children}
         </div>

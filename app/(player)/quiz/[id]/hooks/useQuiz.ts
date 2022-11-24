@@ -6,23 +6,26 @@ import React from 'react';
 
 import { queryClient, QueryContext } from '~/(player)/quiz/[id]/QueryContext';
 import { getQuiz } from '~/shared/data/getQuiz';
+import useAuth from '~/shared/hooks/useAuth';
 import { db, genericConverter } from '~/shared/lib/firebaseClient';
 import type { Quiz, Team } from '~/shared/types';
 
-// FIXME: need to use the quiz id in the key no? or ok since loading one quiz only
 const queryKey = ['quiz'];
 
-export function useQuiz() {
+export default function useQuiz() {
   const {
     initialData: { quiz },
   } = React.useContext(QueryContext);
 
+  const { user } = useAuth();
+
   const result = useQuery({
     queryKey,
-    queryFn: () => getQuiz(quiz?.id),
+    queryFn: () => getQuiz(quiz.id),
     initialData: quiz,
     enabled: !!quiz,
-    staleTime: 1000,
+    staleTime: Infinity,
+    cacheTime: Infinity,
   });
 
   // Clearing server cache avoiding outdated data
@@ -38,7 +41,9 @@ export function useQuiz() {
       genericConverter<Quiz>(),
     );
     const unsubscribe = onSnapshot(quizQuery, (quizDoc) => {
-      queryClient.setQueryData<Quiz>(queryKey, quizDoc.data());
+      queryClient.setQueryData<Quiz>(queryKey, (oldData) =>
+        oldData ? { ...oldData, ...quizDoc.data() } : quizDoc.data(),
+      );
     });
 
     return unsubscribe;
@@ -55,13 +60,17 @@ export function useQuiz() {
     );
     const unsubscribe = onSnapshot(quizTeamsQuery, (teamsSnapshot) => {
       const teams = teamsSnapshot.docs.map((doc) => doc.data());
+      const myTeam = teams.find((team) =>
+        team.members.some((member) => member.name === user?.name),
+      );
+
       queryClient.setQueryData<Quiz>(queryKey, (oldData) =>
-        oldData ? { ...oldData, teams } : undefined,
+        oldData ? { ...oldData, teams, myTeam } : undefined,
       );
     });
 
     return unsubscribe;
-  }, [result.data?.id]);
+  }, [result.data?.id, user?.name]);
 
   return {
     quiz: result.data as Quiz,

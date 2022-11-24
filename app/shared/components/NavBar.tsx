@@ -1,10 +1,13 @@
 'use client';
 import 'client-only';
+import clsx from 'clsx';
 import Image from 'next/image';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { HiOutlineUser } from 'react-icons/hi';
 import React from 'react';
 
+import useQuiz from '~/(player)/quiz/[id]/hooks/useQuiz';
 import useAuth from '~/shared/hooks/useAuth';
 
 import Logo from '../../../public/logo.png';
@@ -14,7 +17,15 @@ interface NavBarProps {
 }
 export default function NavBar({ isAdmin }: NavBarProps) {
   const { user, logIn, logOut } = useAuth();
+  const { quiz } = useQuiz();
   const pathName = usePathname();
+
+  const adminQuizPath = React.useMemo(() => {
+    const parts = pathName?.split('/') || [];
+    parts.pop();
+
+    return parts.join('/');
+  }, [pathName]);
 
   return (
     <div className="navbar my-10 w-[95%] rounded-xl bg-gray-100 px-4">
@@ -27,10 +38,31 @@ export default function NavBar({ isAdmin }: NavBarProps) {
         </div>
       </div>
 
+      <div className="navbar-center lg:flex">
+        <div className="btn-group">
+          <Link
+            className={clsx('btn no-animation', {
+              'btn-active': pathName?.includes('lobby'),
+            })}
+            href={isAdmin ? `${adminQuizPath}/lobby` : `/quiz/${quiz.id}/lobby`}
+          >
+            Lobby
+          </Link>
+          <Link
+            className={clsx('btn no-animation', {
+              'btn-active': pathName?.includes('teams'),
+            })}
+            href={isAdmin ? `${adminQuizPath}/teams` : `/quiz/${quiz.id}/teams`}
+          >
+            Teams
+          </Link>
+        </div>
+      </div>
+
       <div className="navbar-end">
         <div className="flex-none">
           <div className="dropdown-end dropdown">
-            <label tabIndex={0} className="btn-ghost btn-circle avatar btn">
+            <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
               <div className="w-10 rounded-full">
                 {user?.photoURL ? (
                   <Image

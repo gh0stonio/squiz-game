@@ -53,7 +53,7 @@ const getQuizFromFirebase = cache(
 
 export function getQuiz(
   id?: string | null,
-  params?: { user?: User; isForAdmin: boolean },
+  params?: { user?: User; isForAdmin?: boolean },
 ) {
   if (!id) return;
 

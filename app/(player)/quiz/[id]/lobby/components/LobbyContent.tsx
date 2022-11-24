@@ -2,7 +2,7 @@
 import 'client-only';
 import { match, P } from 'ts-pattern';
 
-import { useQuiz } from '~/(player)/quiz/[id]/hooks/useQuiz';
+import useQuiz from '~/(player)/quiz/[id]/hooks/useQuiz';
 
 export default function LobbyContent() {
   const { quiz } = useQuiz();
