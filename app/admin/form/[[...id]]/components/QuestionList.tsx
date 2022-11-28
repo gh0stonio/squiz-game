@@ -4,14 +4,15 @@ import { format } from 'date-fns';
 import { HiTrash, HiPencil } from 'react-icons/hi';
 import React from 'react';
 
-import useQuizQuestion from '~/admin/shared/hooks/useQuizQuestion';
 import type { Question } from '~/shared/types';
+
+import { useQuestions } from '../hooks';
 
 import QuestionFormModal from './QuestionFormModal';
 
 interface QuestionListProps {}
 export default function QuestionList({}: QuestionListProps) {
-  const { questions, deleteQuestion } = useQuizQuestion();
+  const { questions, deleteQuestion } = useQuestions();
   const [isFormModalOpen, setIsFormModalOpen] = React.useState(false);
   const [editingQuestion, setEditingQuestion] = React.useState<Question>();
 
@@ -20,12 +21,12 @@ export default function QuestionList({}: QuestionListProps) {
       <div className="absolute top-0 left-0 right-0 bottom-0 flex h-full w-full flex-col pt-8">
         <div className="flex w-full items-center justify-between">
           <h3 className="pb-2 text-lg font-bold">
-            {questions.length} Question{questions.length > 1 ? 's' : ''}
+            {questions.length} question{questions.length > 1 ? 's' : ''}
           </h3>
 
           <button
             type="button"
-            className="btn btn-accent btn-sm mb-6"
+            className="btn-accent btn-sm btn mb-6"
             onClick={() => setIsFormModalOpen(true)}
           >
             Add Question

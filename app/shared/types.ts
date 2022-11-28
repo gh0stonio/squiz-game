@@ -17,6 +17,7 @@ export interface Team {
 
 export interface Question {
   id: string;
+  quizId: string;
   order: number;
   text: string;
   answer: string;

@@ -3,7 +3,7 @@ import 'client-only';
 import Link from 'next/link';
 import { BiArrowBack } from 'react-icons/bi';
 
-import useQuiz from '../hooks';
+import { useQuiz } from '../hooks';
 
 export default function QuizFormTitle() {
   const { quiz } = useQuiz();

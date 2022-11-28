@@ -1,6 +1,6 @@
 'use client';
 import 'client-only';
-import { updateDoc, setDoc, doc } from 'firebase/firestore';
+import { updateDoc, setDoc, doc, deleteDoc } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import React from 'react';
@@ -8,13 +8,15 @@ import { uid } from 'uid';
 
 import { queryClient } from '~/admin/context';
 import { db, genericConverter } from '~/shared/lib/firebaseClient';
-import type { Quiz } from '~/shared/types';
+import type { Question, Quiz } from '~/shared/types';
 
 import { adminQuizPageDataContext } from './context';
 
-export default function useQuiz() {
+export function useQuiz() {
   const router = useRouter();
-  const { queryKey, query } = React.useContext(adminQuizPageDataContext);
+  const {
+    quiz: { query },
+  } = React.useContext(adminQuizPageDataContext);
 
   const quiz = React.useMemo(() => {
     return query.data;
@@ -70,4 +72,69 @@ export default function useQuiz() {
   );
 
   return { quiz, saveQuiz };
+}
+
+export function useQuestions() {
+  const {
+    quiz: { query: quizQuery },
+    questions: { queryKey, query },
+  } = React.useContext(adminQuizPageDataContext);
+
+  const addQuestion = React.useCallback(
+    (question: Question) => {
+      if (!quizQuery.data) return;
+
+      return setDoc(
+        doc(db, 'questions', question.id).withConverter(
+          genericConverter<Question>(),
+        ),
+        question,
+      ).then(async () => {
+        await queryClient.refetchQueries();
+      });
+    },
+    [quizQuery.data],
+  );
+
+  const editQuestion = React.useCallback(
+    (question: Question) => {
+      if (!quizQuery.data) return;
+
+      return updateDoc(
+        doc(db, 'questions', question.id).withConverter(
+          genericConverter<Question>(),
+        ),
+        question,
+      ).then(async () => {
+        await queryClient.refetchQueries();
+      });
+    },
+    [quizQuery.data],
+  );
+
+  const deleteQuestion = React.useCallback(
+    (questionId: string) => {
+      if (!quizQuery.data) return;
+
+      return deleteDoc(
+        doc(db, 'questions', questionId).withConverter(
+          genericConverter<Question>(),
+        ),
+      ).then(async () => {
+        queryClient.setQueryData<Question[]>(queryKey, (_questions) => {
+          return (_questions || []).filter(
+            (_question) => _question.id !== questionId,
+          );
+        });
+      });
+    },
+    [queryKey, quizQuery.data],
+  );
+
+  return {
+    questions: query.data || [],
+    addQuestion,
+    editQuestion,
+    deleteQuestion,
+  };
 }
