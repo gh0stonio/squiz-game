@@ -74,7 +74,7 @@ export default function QuestionFormModal({
           ...data,
         };
 
-    if (files) {
+    if (files && files.length > 0) {
       const imageName = files && files[0].name;
       const imageRef = ref(storage, imageName);
       await uploadBytes(imageRef, files[0]);
@@ -121,28 +121,29 @@ export default function QuestionFormModal({
                 {...register('files', { required: false })}
               />
 
-              {question?.image && imageUrl ? (
-                <div className="flex items-center justify-center rounded">
-                  <p>Current image:</p>
-                  <Image
-                    src={imageUrl}
-                    alt="question image"
-                    width={50}
-                    height={50}
+              {question?.image &&
+                (imageUrl ? (
+                  <div className="flex items-center justify-center rounded">
+                    <p>Current image:</p>
+                    <Image
+                      src={imageUrl}
+                      alt="question image"
+                      width={50}
+                      height={50}
+                    />
+                  </div>
+                ) : (
+                  <TailSpin
+                    height="30"
+                    width="30"
+                    color="#4fa94d"
+                    ariaLabel="tail-spin-loading"
+                    radius="1"
+                    wrapperStyle={{}}
+                    wrapperClass=""
+                    visible={true}
                   />
-                </div>
-              ) : (
-                <TailSpin
-                  height="30"
-                  width="30"
-                  color="#4fa94d"
-                  ariaLabel="tail-spin-loading"
-                  radius="1"
-                  wrapperStyle={{}}
-                  wrapperClass=""
-                  visible={true}
-                />
-              )}
+                ))}
             </div>
           </div>
 
@@ -165,7 +166,9 @@ export default function QuestionFormModal({
 
           <div className="form-control">
             <label className="label">
-              <span className="label-text text-lg">Duration*</span>
+              <span className="label-text text-lg">
+                Duration (in seconds) *
+              </span>
               {errors.duration && (
                 <span className="label-text-alt text-red-400">
                   This field is required

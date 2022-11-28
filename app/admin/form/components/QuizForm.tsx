@@ -95,12 +95,12 @@ export default function QuizForm({}: QuizFormProps) {
 
         <div className="flex items-center justify-between pt-10">
           {isSubmitting ? (
-            <button className="btn btn-disabled loading btn-sm btn-square" />
+            <button className="btn-disabled loading btn-square btn-sm btn" />
           ) : (
             <button
               type="submit"
               onClick={handleSubmit(onSubmit)}
-              className="btn btn-secondary btn-sm"
+              className="btn-secondary btn-sm btn"
             >
               {quiz ? 'Update' : 'Create'}
             </button>
