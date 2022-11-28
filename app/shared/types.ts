@@ -22,6 +22,7 @@ export interface Question {
   answer: string;
   duration: number;
   maxPoints: number;
+  image?: string;
   createdAt: number;
   updatedAt?: number;
   status: 'ready' | 'in progress' | 'correcting' | 'done';

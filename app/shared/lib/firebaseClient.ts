@@ -1,10 +1,11 @@
-import { initializeApp } from 'firebase/app';
+import { getApp, getApps, initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import {
   getFirestore,
   QueryDocumentSnapshot,
   SnapshotOptions,
 } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -15,13 +16,18 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
+if (!getApps().length) {
+  const app = initializeApp(firebaseConfig);
+}
 
-export const db = getFirestore(app);
+export const auth = getAuth(getApp());
+export const storage = getStorage();
+
+export const db = getFirestore(getApp());
 export function genericConverter<T>() {
   return {
     toFirestore(data: T): T {
+      console.log('toFirestore', { data });
       return data;
     },
     fromFirestore(

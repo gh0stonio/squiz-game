@@ -1,18 +1,22 @@
 'use client';
 import 'client-only';
 import clsx from 'clsx';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import Image from 'next/image';
 import { createPortal } from 'react-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import { TailSpin } from 'react-loader-spinner';
 import React from 'react';
 import { uid } from 'uid';
 
 import useQuizQuestion from '~/admin/shared/hooks/useQuizQuestion';
+import { storage } from '~/shared/lib/firebaseClient';
 import type { Question } from '~/shared/types';
 
 export type QuestionFormInputs = Pick<
   Question,
   'text' | 'answer' | 'duration' | 'maxPoints'
->;
+> & { files?: FileList };
 type QuestionFormProps = {
   onClose: () => void;
   question?: Question;
@@ -40,7 +44,26 @@ export default function QuestionFormModal({
     onClose();
   }, [onClose, reset]);
 
+  const [imageUrl, setImageUrl] = React.useState<string>();
+  React.useEffect(() => {
+    async function fetchingUrl(imageName: string) {
+      const imageRef = ref(storage, imageName);
+      const url = await getDownloadURL(imageRef);
+      setImageUrl(url);
+    }
+    if (!question?.image) {
+      return;
+    }
+
+    fetchingUrl(question.image);
+  }, [question?.image]);
+
   const onSubmitForm: SubmitHandler<QuestionFormInputs> = async (data) => {
+    setIsSubmitting(true);
+
+    const files = data.files;
+    delete data.files;
+
     const updatedQuestion: Question = isEdit
       ? { ...question, ...data, updatedAt: Date.now() }
       : {
@@ -51,10 +74,16 @@ export default function QuestionFormModal({
           ...data,
         };
 
+    if (files) {
+      const imageName = files && files[0].name;
+      const imageRef = ref(storage, imageName);
+      await uploadBytes(imageRef, files[0]);
+      updatedQuestion.image = imageName;
+    }
+
     isEdit ? editQuestion(updatedQuestion) : addQuestion(updatedQuestion);
 
     reset();
-    setIsSubmitting(true);
     closeModal();
   };
 
@@ -79,6 +108,42 @@ export default function QuestionFormModal({
               })}
               {...register('text', { required: true })}
             />
+          </div>
+
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text text-lg">Image</span>
+            </label>
+            <div className="flex w-full gap-12">
+              <input
+                type="file"
+                className="file-input-bordered file-input w-full max-w-xs"
+                {...register('files', { required: false })}
+              />
+
+              {question?.image && imageUrl ? (
+                <div className="flex items-center justify-center rounded">
+                  <p>Current image:</p>
+                  <Image
+                    src={imageUrl}
+                    alt="question image"
+                    width={50}
+                    height={50}
+                  />
+                </div>
+              ) : (
+                <TailSpin
+                  height="30"
+                  width="30"
+                  color="#4fa94d"
+                  ariaLabel="tail-spin-loading"
+                  radius="1"
+                  wrapperStyle={{}}
+                  wrapperClass=""
+                  visible={true}
+                />
+              )}
+            </div>
           </div>
 
           <div className="form-control">
@@ -137,16 +202,16 @@ export default function QuestionFormModal({
           </div>
 
           <div className="mt-10 flex items-center justify-between">
-            <button className="btn btn-sm" onClick={closeModal}>
+            <button className="btn-sm btn" onClick={closeModal}>
               Cancel
             </button>
             {isSubmitting ? (
-              <button className="btn btn-disabled loading btn-sm btn-square" />
+              <button className="btn-disabled loading btn-square btn-sm btn" />
             ) : (
               <input
                 type="submit"
                 onClick={handleSubmit(onSubmitForm)}
-                className="btn btn-accent btn-sm"
+                className="btn-accent btn-sm btn"
               />
             )}
           </div>
