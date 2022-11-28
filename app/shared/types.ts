@@ -33,15 +33,8 @@ export interface Quiz {
   id: string;
   name: string;
   description: string;
+  maxMembersPerTeam: number;
   status: 'ready' | 'in progress' | 'finished';
   createdAt: number;
   updatedAt?: number;
-
-  questions?: Question[];
-  questionsTotalCount: number;
-  ongoingQuestion?: Question;
-
-  maxMembersPerTeam: number;
-  teams?: Team[];
-  myTeam?: Team;
 }

@@ -16,7 +16,7 @@ import { toast } from 'react-toastify';
 import React from 'react';
 import { uid } from 'uid';
 
-import { queryClient, QueryContext } from '~/admin/QueryContext';
+import { queryClient, QueryContext } from '~/admin/context';
 import { getQuiz } from '~/shared/data/getQuiz';
 import { db, genericConverter } from '~/shared/lib/firebaseClient';
 import { Question, Quiz, Team } from '~/shared/types';

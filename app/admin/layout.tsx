@@ -1,17 +1,14 @@
 import 'server-only';
 
 import NavBar from '~/shared/components/NavBar';
-import { getQuizzes } from '~/shared/data/getQuizzes';
 
-import QueryContext from './QueryContext';
+import QueryContextProvider from './context';
 
 export default async function AdminLayout({
   children,
 }: React.PropsWithChildren) {
-  const quizzes = await getQuizzes();
-
   return (
-    <QueryContext initialData={{ quizzes }}>
+    <QueryContextProvider>
       <div className="flex h-full w-full flex-col items-center justify-center">
         <NavBar isAdmin />
 
@@ -19,6 +16,6 @@ export default async function AdminLayout({
           <div className="h-full w-full">{children}</div>
         </div>
       </div>
-    </QueryContext>
+    </QueryContextProvider>
   );
 }

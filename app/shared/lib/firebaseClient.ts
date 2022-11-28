@@ -27,7 +27,6 @@ export const db = getFirestore(getApp());
 export function genericConverter<T>() {
   return {
     toFirestore(data: T): T {
-      console.log('toFirestore', { data });
       return data;
     },
     fromFirestore(

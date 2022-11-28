@@ -4,8 +4,9 @@ import clsx from 'clsx';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import React from 'react';
 
-import useQuiz from '~/admin/shared/hooks/useQuiz';
 import { Quiz } from '~/shared/types';
+
+import useQuiz from '../hooks';
 
 import QuestionList from './QuestionList';
 
@@ -91,7 +92,7 @@ export default function QuizForm({}: QuizFormProps) {
           />
         </div>
 
-        <QuestionList />
+        {/* <QuestionList /> */}
 
         <div className="flex items-center justify-between pt-10">
           {isSubmitting ? (

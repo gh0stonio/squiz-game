@@ -2,7 +2,7 @@
 import 'client-only';
 import React from 'react';
 
-import { queryClient } from '~/admin/QueryContext';
+import { queryClient } from '~/admin/context';
 import { Question, Quiz } from '~/shared/types';
 
 import useQuiz from './useQuiz';
