@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import Link from 'next/link';
 import { BiArrowBack } from 'react-icons/bi';
 
-import useQuiz from '~/admin/shared/hooks/useQuiz';
+import { useQuiz } from '../hooks';
 
 export default function Header() {
   const { quiz, start, end, reset } = useQuiz();
@@ -22,7 +22,7 @@ export default function Header() {
       <div className="flex gap-3">
         <button
           onClick={start}
-          className={clsx('btn btn-success btn-sm', {
+          className={clsx('btn-success btn-sm btn', {
             'btn-disabled': quiz?.status !== 'ready',
           })}
         >
@@ -30,7 +30,7 @@ export default function Header() {
         </button>
         <button
           onClick={reset}
-          className={clsx('btn btn-warning btn-sm', {
+          className={clsx('btn-warning btn-sm btn', {
             'btn-disabled': quiz?.status === 'ready',
           })}
         >
@@ -38,7 +38,7 @@ export default function Header() {
         </button>
         <button
           onClick={end}
-          className={clsx('btn btn-error btn-sm', {
+          className={clsx('btn-error btn-sm btn', {
             'btn-disabled': quiz?.status !== 'in progress',
           })}
         >

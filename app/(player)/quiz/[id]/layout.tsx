@@ -2,17 +2,23 @@ import 'server-only';
 import React from 'react';
 
 import NavBar from '~/shared/components/NavBar';
+import {
+  getOngoingQuestion,
+  getQuestionsCount,
+} from '~/shared/data/getQuestions';
 import { getQuiz } from '~/shared/data/getQuiz';
-import { getUser } from '~/shared/data/getUser';
+import { getTeams } from '~/shared/data/getTeams';
 
-import QueryContext from './QueryContext';
+import QueryContext from './context';
 
 export default async function PlayerLayout({
   children,
   params,
 }: React.PropsWithChildren<{ params: { id: string } }>) {
-  const user = await getUser();
-  const quiz = await getQuiz(params.id, { user });
+  const quiz = await getQuiz(params.id);
+  const teams = await getTeams(params.id);
+  const ongoingQuestion = await getOngoingQuestion(params.id);
+  const questionsCount = await getQuestionsCount(params.id);
 
   if (!quiz) {
     return (
@@ -25,7 +31,9 @@ export default async function PlayerLayout({
   }
 
   return (
-    <QueryContext initialData={{ quiz }}>
+    <QueryContext
+      initialData={{ quiz, teams, ongoingQuestion, questionsCount }}
+    >
       <div className="flex h-full w-full flex-col items-center justify-center">
         <NavBar />
 

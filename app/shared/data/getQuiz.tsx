@@ -1,63 +1,19 @@
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  orderBy,
-  query,
-} from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 import { cache } from 'react';
 
 import { db, genericConverter } from '~/shared/lib/firebaseClient';
-import type { Question, Quiz, Team, User } from '~/shared/types';
+import type { Quiz } from '~/shared/types';
 
-const getQuizFromFirebase = cache(
-  async (id: string, params: { user?: User; isForAdmin?: boolean } = {}) => {
-    // Fetching Quiz document
-    const docSnap = await getDoc(
-      doc(db, 'quizzes', `${id}`).withConverter(genericConverter<Quiz>()),
-    );
-    if (!docSnap.exists()) return;
+const getQuizFromFirebase = cache(async (quizId: string) => {
+  const docSnapshot = await getDoc(
+    doc(db, 'quizzes', `${quizId}`).withConverter(genericConverter<Quiz>()),
+  );
 
-    // Fetching Questions sub-collection
-    const questionsQuerySnapshot = await getDocs(
-      query(
-        collection(db, 'quizzes', docSnap.id, 'questions'),
-        orderBy('order'),
-      ).withConverter(genericConverter<Question>()),
-    );
-    const questions = questionsQuerySnapshot.docs.map((doc) => doc.data());
-    const ongoingQuestion = questions.find(
-      (_question) =>
-        _question.status === 'in progress' || _question.status === 'correcting',
-    );
+  return docSnapshot.data();
+});
 
-    // Fetching Teams sub-collection
-    const teamsQuerySnapshot = await getDocs(
-      collection(db, 'quizzes', docSnap.id, 'teams').withConverter(
-        genericConverter<Team>(),
-      ),
-    );
-    const teams = teamsQuerySnapshot.docs.map((doc) => doc.data());
-    const myTeam = teams.find((team) =>
-      team.members.some((member) => member.name === params.user?.name),
-    );
+export function getQuiz(quizId?: string | null) {
+  if (!quizId) return;
 
-    return {
-      ...docSnap.data(),
-      questions: params.isForAdmin ? questions : [],
-      ...(ongoingQuestion ? { ongoingQuestion } : {}),
-      teams,
-      ...(params.isForAdmin ? {} : { myTeam }),
-    };
-  },
-);
-
-export function getQuiz(
-  id?: string | null,
-  params?: { user?: User; isForAdmin?: boolean },
-) {
-  if (!id) return;
-
-  return getQuizFromFirebase(id, params);
+  return getQuizFromFirebase(quizId);
 }

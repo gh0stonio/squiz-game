@@ -10,6 +10,7 @@ export type User = {
 
 export interface Team {
   id: string;
+  quizId: string;
   name: string;
   members: User[];
   leader: User;
@@ -17,6 +18,7 @@ export interface Team {
 
 export interface Question {
   id: string;
+  quizId: string;
   order: number;
   text: string;
   answer: string;
@@ -33,15 +35,8 @@ export interface Quiz {
   id: string;
   name: string;
   description: string;
+  maxMembersPerTeam: number;
   status: 'ready' | 'in progress' | 'finished';
   createdAt: number;
   updatedAt?: number;
-
-  questions?: Question[];
-  questionsTotalCount: number;
-  ongoingQuestion?: Question;
-
-  maxMembersPerTeam: number;
-  teams?: Team[];
-  myTeam?: Team;
 }

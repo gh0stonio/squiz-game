@@ -12,7 +12,7 @@ interface OngoingQuestionProps {
 }
 
 export default function OngoingQuestion({ question }: OngoingQuestionProps) {
-  const { quiz } = useQuiz();
+  const { questionsCount } = useQuiz();
   const timer = useTimer(question);
   const duration = timer.timeLeft
     ? intervalToDuration({
@@ -21,12 +21,12 @@ export default function OngoingQuestion({ question }: OngoingQuestionProps) {
       })
     : undefined;
 
+  console.log(question);
   return (
     <>
       <div className="flex w-full items-center justify-between">
         <h2 className="text-2xl font-bold">
-          Question {question.order}/{quiz?.questionsTotalCount} -{' '}
-          {question.text}
+          Question {question.order}/{questionsCount} - {question.text}
         </h2>
         <span>
           Time left:{' '}

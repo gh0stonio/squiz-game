@@ -9,9 +9,10 @@ import { TailSpin } from 'react-loader-spinner';
 import React from 'react';
 import { uid } from 'uid';
 
-import useQuizQuestion from '~/admin/shared/hooks/useQuizQuestion';
 import { storage } from '~/shared/lib/firebaseClient';
 import type { Question } from '~/shared/types';
+
+import { useQuestions, useQuiz } from '../hooks';
 
 export type QuestionFormInputs = Pick<
   Question,
@@ -26,7 +27,8 @@ export default function QuestionFormModal({
   onClose,
   question,
 }: QuestionFormProps) {
-  const { questions, editQuestion, addQuestion } = useQuizQuestion();
+  const { quiz } = useQuiz();
+  const { questions, addQuestion, editQuestion } = useQuestions();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const isEdit = !!question;
@@ -59,15 +61,18 @@ export default function QuestionFormModal({
   }, [question?.image]);
 
   const onSubmitForm: SubmitHandler<QuestionFormInputs> = async (data) => {
+    if (!quiz?.id) return;
+
     setIsSubmitting(true);
 
     const files = data.files;
     delete data.files;
 
-    const updatedQuestion: Question = isEdit
-      ? { ...question, ...data, updatedAt: Date.now() }
+    const savingQuestion: Question = isEdit
+      ? { ...question, ...data, quizId: quiz.id, updatedAt: Date.now() }
       : {
           id: uid(16),
+          quizId: quiz.id,
           order: questions.length + 1,
           status: 'ready',
           createdAt: Date.now(),
@@ -78,10 +83,10 @@ export default function QuestionFormModal({
       const imageName = files && files[0].name;
       const imageRef = ref(storage, imageName);
       await uploadBytes(imageRef, files[0]);
-      updatedQuestion.image = imageName;
+      savingQuestion.image = imageName;
     }
 
-    isEdit ? editQuestion(updatedQuestion) : addQuestion(updatedQuestion);
+    await (isEdit ? editQuestion(savingQuestion) : addQuestion(savingQuestion));
 
     reset();
     closeModal();
@@ -211,11 +216,13 @@ export default function QuestionFormModal({
             {isSubmitting ? (
               <button className="btn-disabled loading btn-square btn-sm btn" />
             ) : (
-              <input
+              <button
                 type="submit"
                 onClick={handleSubmit(onSubmitForm)}
                 className="btn-accent btn-sm btn"
-              />
+              >
+                {question ? 'Update' : 'Create'}
+              </button>
             )}
           </div>
         </form>
