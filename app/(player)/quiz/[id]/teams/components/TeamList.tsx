@@ -14,7 +14,7 @@ export default function TeamList() {
   const [editingTeam, setEditingTeam] = React.useState<Team>();
 
   const { quiz } = useQuiz();
-  const { isChangeOngoing, checkIfLeader } = useTeam();
+  const { teams, myTeam, isChangeOngoing, checkIfLeader } = useTeam();
 
   return (
     <div className="relative h-full w-full">
@@ -23,7 +23,7 @@ export default function TeamList() {
           <button
             type="button"
             className={clsx('btn-accent btn-sm btn mb-6', {
-              'btn-disabled': !!quiz.myTeam,
+              'btn-disabled': !!myTeam,
             })}
             onClick={() => setIsFormModalOpen(true)}
           >
@@ -32,13 +32,13 @@ export default function TeamList() {
         </div>
 
         <div className="-mx-4 overflow-auto px-4 pb-8">
-          {!quiz.teams || quiz.teams.length === 0 ? (
+          {!teams || teams.length === 0 ? (
             <p className="flex w-full items-center justify-center text-2xl">
               No team available yet
             </p>
           ) : (
             <div className="grid grid-cols-5 gap-4">
-              {quiz.teams.map((team) => (
+              {teams.map((team) => (
                 <div key={team.id} className="card h-60 bg-base-100 shadow-xl">
                   <div className="card-body">
                     <h2 className="card-title flex w-full items-center justify-between">

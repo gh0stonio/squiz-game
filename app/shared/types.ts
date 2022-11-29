@@ -10,6 +10,7 @@ export type User = {
 
 export interface Team {
   id: string;
+  quizId: string;
   name: string;
   members: User[];
   leader: User;

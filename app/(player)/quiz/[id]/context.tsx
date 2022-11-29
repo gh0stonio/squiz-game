@@ -3,7 +3,7 @@ import 'client-only';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
 
-import type { Quiz } from '~/shared/types';
+import type { Quiz, Team } from '~/shared/types';
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -14,11 +14,11 @@ export const queryClient = new QueryClient({
 });
 
 export const QueryContext = React.createContext<{
-  initialData: { quiz: Quiz };
+  initialData: { quiz: Quiz; teams?: Team[] };
 }>({ initialData: { quiz: {} as Quiz } });
 
 interface QueryContextProps {
-  initialData: { quiz: Quiz };
+  initialData: { quiz: Quiz; teams?: Team[] };
 }
 export default function QueryContextProvider({
   children,

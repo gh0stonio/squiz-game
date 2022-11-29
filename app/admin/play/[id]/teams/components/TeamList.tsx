@@ -8,7 +8,7 @@ interface TeamListProps {
   teams: Team[];
 }
 export default function TeamList({ teams }: TeamListProps) {
-  // TODO: display qui max per team
+  // TODO: display quiz max per team
   return (
     <div className="relative h-full w-full">
       <div className="absolute top-0 left-0 right-0 bottom-0 flex h-full w-full flex-col">

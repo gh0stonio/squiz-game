@@ -1,9 +1,10 @@
 'use client';
 import 'client-only';
 import { CgArrowTopRight } from 'react-icons/cg';
-import { match, P } from 'ts-pattern';
+import { match } from 'ts-pattern';
 
 import useQuiz from '~/(player)/quiz/[id]/hooks/useQuiz';
+import useTeam from '~/(player)/quiz/[id]/hooks/useTeam';
 import useAuth from '~/shared/hooks/useAuth';
 
 import TeamList from './TeamList';
@@ -11,6 +12,7 @@ import TeamList from './TeamList';
 export default function MainContent() {
   const { user } = useAuth();
   const { quiz } = useQuiz();
+  const { teams } = useTeam();
 
   if (!user) {
     return (
@@ -22,13 +24,12 @@ export default function MainContent() {
   }
 
   return match(quiz)
-    .with({ status: 'ready', quiz: { teams: P.union(P.nullish, []) } }, () => (
-      <p>no teams available</p>
-    ))
     .with({ status: 'in progress' }, () => {
       return <p>Quiz ongoing... can&apos;t change now</p>;
     })
-    .with({ status: 'ready' }, () => <TeamList />)
+    .with({ status: 'ready' }, () =>
+      teams ? <TeamList /> : <p>no teams available</p>,
+    )
     .with({ status: 'finished' }, () => {
       return <p>Quiz over, thanks for your participation!</p>;
     })
