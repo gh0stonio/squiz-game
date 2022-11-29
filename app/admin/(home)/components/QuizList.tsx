@@ -10,7 +10,7 @@ import React from 'react';
 import { useQuizzes } from '../hooks';
 
 export default function QuizList() {
-  const { quizzes, deleteQuiz } = useQuizzes();
+  const { quizzes, deleteQuiz, questions } = useQuizzes();
 
   return (
     <div className="w-full overflow-auto">
@@ -31,7 +31,13 @@ export default function QuizList() {
               return (
                 <tr key={quiz.id} className="h-12">
                   <td>{quiz.name}</td>
-                  <td className="text-end">TODO</td>
+                  <td className="text-end">
+                    {
+                      (questions || []).filter(
+                        (_question) => _question.quizId === quiz.id,
+                      ).length
+                    }
+                  </td>
                   <td className="text-end">
                     {format(new Date(quiz.createdAt), 'MM/dd/yyyy')}
                   </td>

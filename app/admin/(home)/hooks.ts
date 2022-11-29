@@ -11,7 +11,9 @@ import { Quiz } from '~/shared/types';
 import { adminHomePageDataContext } from './context';
 
 export function useQuizzes() {
-  const { queryKey, query } = React.useContext(adminHomePageDataContext);
+  const { queryKey, query, questions } = React.useContext(
+    adminHomePageDataContext,
+  );
 
   const deleteQuiz = React.useCallback(async (quizId: Quiz['id']) => {
     deleteDoc(doc(db, 'quizzes', quizId)).then(
@@ -38,6 +40,7 @@ export function useQuizzes() {
 
   return {
     quizzes: query.data || [],
+    questions,
     deleteQuiz,
   };
 }

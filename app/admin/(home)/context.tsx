@@ -4,21 +4,24 @@ import { type DefinedUseQueryResult, useQuery } from '@tanstack/react-query';
 import React from 'react';
 
 import { getQuizzes } from '~/shared/data/getQuizzes';
-import { Quiz } from '~/shared/types';
+import { Question, Quiz } from '~/shared/types';
 
 interface AdminHomePageDataContext {
   queryKey: (string | undefined)[];
   query: DefinedUseQueryResult<Quiz[] | undefined, unknown>;
+  questions: Question[];
 }
 export const adminHomePageDataContext =
   React.createContext<AdminHomePageDataContext>({} as AdminHomePageDataContext);
 
 interface AdminHomePageDataContextProviderProps {
   quizzes: Quiz[];
+  questions: Question[];
 }
 export default function AdminHomePageDataContextProvider({
   children,
   quizzes,
+  questions,
 }: React.PropsWithChildren<AdminHomePageDataContextProviderProps>) {
   const queryKey = ['quizzes'];
 
@@ -31,7 +34,7 @@ export default function AdminHomePageDataContextProvider({
   });
 
   return (
-    <adminHomePageDataContext.Provider value={{ query, queryKey }}>
+    <adminHomePageDataContext.Provider value={{ query, queryKey, questions }}>
       {children}
     </adminHomePageDataContext.Provider>
   );

@@ -21,3 +21,16 @@ export function getQuestions(quizId?: string | null) {
 
   return getQuestionsFromFirebase(quizId);
 }
+
+const getAllQuestionsFromFirebase = cache(async () => {
+  const questionsQuerySnapshot = await getDocs(
+    query(collection(db, 'questions'), orderBy('order')).withConverter(
+      genericConverter<Question>(),
+    ),
+  );
+
+  return questionsQuerySnapshot.docs.map((doc) => doc.data());
+});
+export function getAllQuestions() {
+  return getAllQuestionsFromFirebase();
+}
