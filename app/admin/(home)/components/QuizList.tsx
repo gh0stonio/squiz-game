@@ -55,7 +55,7 @@ export default function QuizList() {
                   </td>
                   <td>
                     <div className="flex justify-end">
-                      <Link href={`/admin/play/lobby?id=${quiz.id}`}>
+                      <Link href={`/admin/play/${quiz.id}/lobby`}>
                         <BsPlayFill className="h-8 w-8 cursor-pointer pl-3 text-gray-400" />
                       </Link>
                       <HiLink

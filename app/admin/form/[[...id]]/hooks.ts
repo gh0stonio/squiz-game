@@ -10,13 +10,13 @@ import { queryClient } from '~/admin/context';
 import { db, genericConverter } from '~/shared/lib/firebaseClient';
 import type { Question, Quiz } from '~/shared/types';
 
-import { adminQuizPageDataContext } from './context';
+import { adminQuizFormPageDataContext } from './context';
 
 export function useQuiz() {
   const router = useRouter();
   const {
     quiz: { query },
-  } = React.useContext(adminQuizPageDataContext);
+  } = React.useContext(adminQuizFormPageDataContext);
 
   const quiz = React.useMemo(() => {
     return query.data;
@@ -78,7 +78,7 @@ export function useQuestions() {
   const {
     quiz: { query: quizQuery },
     questions: { queryKey, query },
-  } = React.useContext(adminQuizPageDataContext);
+  } = React.useContext(adminQuizFormPageDataContext);
 
   const addQuestion = React.useCallback(
     (question: Question) => {

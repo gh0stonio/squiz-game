@@ -5,7 +5,7 @@ import { getQuiz } from '~/shared/data/getQuiz';
 
 import FormTitle from './components/FormTitle';
 import QuizForm from './components/QuizForm';
-import AdminQuizPageDataContext from './context';
+import AdminQuizFormPageDataContextProvider from './context';
 
 export default async function AdminQuizFormPage({
   params,
@@ -16,13 +16,13 @@ export default async function AdminQuizFormPage({
   const questions = await getQuestions(params.id && params.id[0]);
 
   return (
-    <AdminQuizPageDataContext quiz={quiz} questions={questions}>
+    <AdminQuizFormPageDataContextProvider quiz={quiz} questions={questions}>
       <div className="flex h-full w-full flex-col p-10">
         <FormTitle />
         <QuizForm />
 
         <div id="question-form-modal" />
       </div>
-    </AdminQuizPageDataContext>
+    </AdminQuizFormPageDataContextProvider>
   );
 }

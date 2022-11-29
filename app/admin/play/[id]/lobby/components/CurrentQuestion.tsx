@@ -5,12 +5,18 @@ import { intervalToDuration } from 'date-fns';
 import React from 'react';
 import { match } from 'ts-pattern';
 
-import useQuiz from '~/admin/shared/hooks/useQuiz';
 import { useTimer } from '~/shared/hooks/useTimer';
 
+import { useQuiz } from '../hooks';
+
 export default function CurrentQuestion() {
-  const { quiz, currentQuestion, pushQuestion, sendQuestionExpired } =
-    useQuiz();
+  const {
+    quiz,
+    questions,
+    currentQuestion,
+    pushQuestion,
+    sendQuestionExpired,
+  } = useQuiz();
   const timer = useTimer(currentQuestion);
   const duration = timer.timeLeft
     ? intervalToDuration({
@@ -33,10 +39,10 @@ export default function CurrentQuestion() {
     <div className="flex h-full flex-col">
       <div className="flex w-full">
         <h3 className="w-full text-2xl font-bold">
-          Current Question - {currentQuestion.order}/{quiz?.questionsTotalCount}
+          Current Question - {currentQuestion.order}/{questions.length}
         </h3>
         <button
-          className={clsx('btn btn-secondary btn-sm', {
+          className={clsx('btn-secondary btn-sm btn', {
             'btn-disabled':
               quiz?.status !== 'in progress' ||
               currentQuestion.status !== 'ready',

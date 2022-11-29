@@ -7,7 +7,7 @@ import { getQuestions } from '~/shared/data/getQuestions';
 import { getQuiz } from '~/shared/data/getQuiz';
 import { Question, Quiz } from '~/shared/types';
 
-interface AdminQuizFormPageDataContext {
+interface AdminQuizLobbyPageDataContext {
   quiz: {
     queryKey: (string | undefined)[];
     query: DefinedUseQueryResult<Quiz | undefined, unknown>;
@@ -17,20 +17,20 @@ interface AdminQuizFormPageDataContext {
     query: DefinedUseQueryResult<Question[] | undefined, unknown>;
   };
 }
-export const adminQuizFormPageDataContext =
-  React.createContext<AdminQuizFormPageDataContext>(
-    {} as AdminQuizFormPageDataContext,
+export const adminQuizLobbyPageDataContext =
+  React.createContext<AdminQuizLobbyPageDataContext>(
+    {} as AdminQuizLobbyPageDataContext,
   );
 
-interface AdminQuizFormPageDataContextProviderProps {
+interface AdminQuizLobbyPageDataContextProviderProps {
   quiz?: Quiz;
   questions?: Question[];
 }
-export default function AdminQuizFormPageDataContextProvider({
+export default function AdminQuizLobbyPageDataContextProvider({
   children,
   quiz,
   questions,
-}: React.PropsWithChildren<AdminQuizFormPageDataContextProviderProps>) {
+}: React.PropsWithChildren<AdminQuizLobbyPageDataContextProviderProps>) {
   const queryKey = ['quiz', quiz?.id];
   const query = useQuery({
     queryKey,
@@ -52,13 +52,13 @@ export default function AdminQuizFormPageDataContextProvider({
   });
 
   return (
-    <adminQuizFormPageDataContext.Provider
+    <adminQuizLobbyPageDataContext.Provider
       value={{
         quiz: { queryKey, query },
         questions: { queryKey: questionsQueryKey, query: questionsQuery },
       }}
     >
       {children}
-    </adminQuizFormPageDataContext.Provider>
+    </adminQuizLobbyPageDataContext.Provider>
   );
 }

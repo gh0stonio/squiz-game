@@ -7,7 +7,6 @@ import { usePathname, useSearchParams } from 'next/navigation';
 import { HiOutlineUser } from 'react-icons/hi';
 import React from 'react';
 
-import useQuiz from '~/(player)/quiz/[id]/hooks/useQuiz';
 import useAuth from '~/shared/hooks/useAuth';
 
 import Logo from '../../../public/logo.png';
@@ -17,12 +16,8 @@ interface NavBarProps {
 }
 export default function NavBar({ isAdmin }: NavBarProps) {
   const { user, logIn, logOut } = useAuth();
-  const { quiz } = useQuiz();
 
-  const searchParams = useSearchParams();
   const pathName = usePathname();
-
-  const quizId = quiz.id || searchParams.get('id');
   const shouldDisplayCenterNav =
     pathName?.includes('lobby') || pathName?.includes('teams');
 
@@ -44,11 +39,7 @@ export default function NavBar({ isAdmin }: NavBarProps) {
               className={clsx('btn no-animation', {
                 'btn-active': pathName?.includes('lobby'),
               })}
-              href={
-                isAdmin
-                  ? `/admin/play/lobby?id=${quizId}`
-                  : `/quiz/${quizId}/lobby`
-              }
+              href={pathName?.replace('teams', 'lobby') as string}
             >
               Lobby
             </Link>
@@ -56,11 +47,7 @@ export default function NavBar({ isAdmin }: NavBarProps) {
               className={clsx('btn no-animation', {
                 'btn-active': pathName?.includes('teams'),
               })}
-              href={
-                isAdmin
-                  ? `/admin/play/teams?id=${quizId}`
-                  : `/quiz/${quizId}/teams`
-              }
+              href={pathName?.replace('lobby', 'teams') as string}
             >
               Teams
             </Link>

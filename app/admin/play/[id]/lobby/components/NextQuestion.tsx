@@ -1,17 +1,17 @@
 'use client';
 import 'client-only';
 
-import useQuiz from '~/admin/shared/hooks/useQuiz';
+import { useQuiz } from '../hooks';
 
 export default function NextQuestion() {
-  const { quiz, nextQuestion } = useQuiz();
+  const { quiz, questions, nextQuestion } = useQuiz();
 
   if (!nextQuestion) return null;
 
   return (
     <div>
       <h3 className="w-full text-2xl font-semibold">
-        Next Question - {nextQuestion.order}/{quiz?.questionsTotalCount}
+        Next Question - {nextQuestion.order}/{questions.length}
       </h3>
 
       <p>{nextQuestion.text}</p>
