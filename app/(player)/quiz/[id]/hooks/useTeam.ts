@@ -18,7 +18,7 @@ import { queryClient, QueryContext } from '~/(player)/quiz/[id]/context';
 import { getTeams } from '~/shared/data/getTeams';
 import useAuth from '~/shared/hooks/useAuth';
 import { db, genericConverter } from '~/shared/lib/firebaseClient';
-import type { Question, Quiz, Team, User } from '~/shared/types';
+import type { Team, User } from '~/shared/types';
 
 import useQuiz from './useQuiz';
 

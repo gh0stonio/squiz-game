@@ -2,6 +2,10 @@ import 'server-only';
 import React from 'react';
 
 import NavBar from '~/shared/components/NavBar';
+import {
+  getOngoingQuestion,
+  getQuestionsCount,
+} from '~/shared/data/getQuestions';
 import { getQuiz } from '~/shared/data/getQuiz';
 import { getTeams } from '~/shared/data/getTeams';
 
@@ -13,6 +17,8 @@ export default async function PlayerLayout({
 }: React.PropsWithChildren<{ params: { id: string } }>) {
   const quiz = await getQuiz(params.id);
   const teams = await getTeams(params.id);
+  const ongoingQuestion = await getOngoingQuestion(params.id);
+  const questionsCount = await getQuestionsCount(params.id);
 
   if (!quiz) {
     return (
@@ -25,7 +31,9 @@ export default async function PlayerLayout({
   }
 
   return (
-    <QueryContext initialData={{ quiz, teams }}>
+    <QueryContext
+      initialData={{ quiz, teams, ongoingQuestion, questionsCount }}
+    >
       <div className="flex h-full w-full flex-col items-center justify-center">
         <NavBar />
 
