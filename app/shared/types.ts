@@ -29,6 +29,8 @@ export interface Question {
   updatedAt?: number;
   status: 'ready' | 'in progress' | 'correcting' | 'done';
   startedAt?: number;
+
+  answers?: [];
 }
 
 export interface Quiz {

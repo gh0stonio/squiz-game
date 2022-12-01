@@ -108,7 +108,7 @@ export default function QuestionFormModal({
               )}
             </label>
             <textarea
-              className={clsx('textarea-bordered textarea h-60', {
+              className={clsx('h-30 textarea-bordered textarea', {
                 'textarea-error': !!errors.text,
               })}
               {...register('text', { required: true })}

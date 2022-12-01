@@ -9,13 +9,15 @@ import {
   orderBy,
   query,
   where,
+  updateDoc,
+  arrayUnion,
 } from 'firebase/firestore';
 import React from 'react';
 
 import { queryClient, QueryContext } from '~/(player)/quiz/[id]/context';
 import { getQuiz } from '~/shared/data/getQuiz';
 import { db, genericConverter } from '~/shared/lib/firebaseClient';
-import type { Question, Quiz } from '~/shared/types';
+import type { Question, Quiz, Team } from '~/shared/types';
 
 const queryKey = ['quiz'];
 
@@ -80,11 +82,31 @@ export default function useQuiz() {
     return unsubscribe;
   }, [result.data?.id]);
 
+  const sendAnswer = React.useCallback(
+    (myTeam: Team, answer: string) => {
+      if (!ongoingQuestion) return;
+
+      updateDoc(
+        doc(db, 'questions', ongoingQuestion.id).withConverter(
+          genericConverter<Question>(),
+        ),
+        {
+          answers: arrayUnion({
+            team: myTeam.name,
+            answer,
+          }),
+        },
+      );
+    },
+    [ongoingQuestion],
+  );
+
   return {
     quiz: result.data as Quiz,
     ongoingQuestion,
     questionsCount,
     isLoading: result.isLoading,
     isFetching: result.isFetching,
+    sendAnswer,
   };
 }
