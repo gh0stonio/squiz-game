@@ -186,7 +186,7 @@ export default function QuestionFormModal({
               className={clsx('input-bordered input', {
                 'input-error': !!errors.duration,
               })}
-              {...register('duration', { required: true })}
+              {...register('duration', { required: true, valueAsNumber: true })}
             />
           </div>
 
@@ -205,7 +205,10 @@ export default function QuestionFormModal({
               className={clsx('input-bordered input', {
                 'input-error': !!errors.maxPoints,
               })}
-              {...register('maxPoints', { required: true })}
+              {...register('maxPoints', {
+                required: true,
+                valueAsNumber: true,
+              })}
             />
           </div>
 

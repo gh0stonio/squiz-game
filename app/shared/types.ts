@@ -30,7 +30,7 @@ export interface Question {
   status: 'ready' | 'in progress' | 'correcting' | 'done';
   startedAt?: number;
 
-  answers?: [];
+  answers?: { team: string; value: string; score?: number }[];
 }
 
 export interface Quiz {

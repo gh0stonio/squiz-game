@@ -41,7 +41,11 @@ export function useQuiz() {
               doc(db, 'questions', question.id).withConverter(
                 genericConverter<Question>(),
               ),
-              { ...question, status: status === 'ready' ? 'ready' : 'done' },
+              {
+                ...question,
+                answers: status === 'ready' ? [] : question.answers,
+                status: status === 'ready' ? 'ready' : 'done',
+              },
             );
           }),
         );
@@ -134,6 +138,24 @@ export function useQuiz() {
     );
   }, [currentQuestion, questionsQueryKey, quiz]);
 
+  const saveAnswersCorrection = React.useCallback(
+    async (answers: Question['answers']) => {
+      if (!currentQuestion) return;
+
+      await setDoc(
+        doc(db, 'questions', currentQuestion.id).withConverter(
+          genericConverter<Question>(),
+        ),
+        {
+          ...currentQuestion,
+          status: 'done',
+          answers,
+        },
+      );
+    },
+    [currentQuestion],
+  );
+
   return {
     quiz,
     questions,
@@ -144,5 +166,6 @@ export function useQuiz() {
     nextQuestion,
     pushQuestion,
     sendQuestionExpired,
+    saveAnswersCorrection,
   };
 }

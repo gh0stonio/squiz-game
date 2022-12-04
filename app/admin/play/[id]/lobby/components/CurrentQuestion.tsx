@@ -2,6 +2,7 @@
 import 'client-only';
 import clsx from 'clsx';
 import { intervalToDuration } from 'date-fns';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { match } from 'ts-pattern';
 
@@ -9,7 +10,10 @@ import { useTimer } from '~/shared/hooks/useTimer';
 
 import { useQuiz } from '../hooks';
 
+import Corrections from './Corrections';
+
 export default function CurrentQuestion() {
+  const router = useRouter();
   const {
     quiz,
     questions,
@@ -29,8 +33,12 @@ export default function CurrentQuestion() {
     timer.setIsExpired(false);
     if (timer.isExpired) {
       sendQuestionExpired();
+
+      setTimeout(() => {
+        router.refresh();
+      }, 2000);
     }
-  }, [sendQuestionExpired, timer]);
+  }, [router, sendQuestionExpired, timer]);
 
   if (!currentQuestion)
     return <p>No question ready, please reset the quiz !</p>;
@@ -90,7 +98,11 @@ export default function CurrentQuestion() {
           );
         })
         .with({ status: 'correcting' }, () => {
-          return <div className="h-full py-6">Correction screen</div>;
+          return (
+            <div className="h-full pt-6">
+              <Corrections />
+            </div>
+          );
         })
         .otherwise(() => null)}
     </div>

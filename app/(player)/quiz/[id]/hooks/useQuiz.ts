@@ -93,7 +93,7 @@ export default function useQuiz() {
         {
           answers: arrayUnion({
             team: myTeam.name,
-            answer,
+            value: answer,
           }),
         },
       );

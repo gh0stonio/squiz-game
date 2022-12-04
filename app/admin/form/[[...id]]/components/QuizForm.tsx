@@ -68,7 +68,10 @@ export default function QuizForm({}: QuizFormProps) {
               className={clsx('input-bordered input', {
                 'input-error': !!errors.maxMembersPerTeam,
               })}
-              {...register('maxMembersPerTeam', { required: true })}
+              {...register('maxMembersPerTeam', {
+                required: true,
+                valueAsNumber: true,
+              })}
             />
           </div>
         </div>
