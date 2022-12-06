@@ -1,6 +1,7 @@
 'use client';
 import 'client-only';
 import { updateDoc, doc, setDoc } from 'firebase/firestore';
+import { Router } from 'next/router';
 import result from 'postcss/lib/result';
 import React from 'react';
 
@@ -34,16 +35,16 @@ export function useQuiz() {
 
       if (status === 'ready' || status === 'finished') {
         await Promise.all(
-          questions.map((question) => {
-            delete question.startedAt;
+          questions.map((_question) => {
+            delete _question.startedAt;
 
             setDoc(
-              doc(db, 'questions', question.id).withConverter(
+              doc(db, 'questions', _question.id).withConverter(
                 genericConverter<Question>(),
               ),
               {
-                ...question,
-                answers: status === 'ready' ? [] : question.answers,
+                ..._question,
+                answers: status === 'ready' ? [] : _question.answers,
                 status: status === 'ready' ? 'ready' : 'done',
               },
             );
@@ -52,6 +53,7 @@ export function useQuiz() {
         queryClient.setQueryData<Question[]>(questionsQueryKey, (oldData) =>
           (oldData || []).map((_question) => ({
             ..._question,
+            answers: status === 'ready' ? [] : _question.answers,
             status: status === 'ready' ? 'ready' : 'done',
           })),
         );
@@ -131,11 +133,9 @@ export function useQuiz() {
       updatedQuestion,
     );
 
-    queryClient.setQueryData<Question[]>(questionsQueryKey, (oldData) =>
-      (oldData || []).map((_question) =>
-        _question.id === currentQuestion.id ? updatedQuestion : _question,
-      ),
-    );
+    setTimeout(() => {
+      queryClient.refetchQueries({ queryKey: questionsQueryKey });
+    }, 1000);
   }, [currentQuestion, questionsQueryKey, quiz]);
 
   const saveAnswersCorrection = React.useCallback(

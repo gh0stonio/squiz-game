@@ -33,10 +33,6 @@ export default function CurrentQuestion() {
     timer.setIsExpired(false);
     if (timer.isExpired) {
       sendQuestionExpired();
-
-      setTimeout(() => {
-        router.refresh();
-      }, 2000);
     }
   }, [router, sendQuestionExpired, timer]);
 
@@ -50,7 +46,7 @@ export default function CurrentQuestion() {
           Current Question - {currentQuestion.order}/{questions.length}
         </h3>
         <button
-          className={clsx('btn-secondary btn-sm btn', {
+          className={clsx('btn btn-secondary btn-sm', {
             'btn-disabled':
               quiz?.status !== 'in progress' ||
               currentQuestion.status !== 'ready',
