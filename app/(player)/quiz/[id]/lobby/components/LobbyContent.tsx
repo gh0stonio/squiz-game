@@ -18,9 +18,7 @@ export default function LobbyContent() {
       return myTeam ? (
         <p>The game will start soon, be ready !</p>
       ) : (
-        <p>
-          <p>Please choose your team first to participate</p>
-        </p>
+        <p>Please choose your team first to participate</p>
       );
     })
     .with({ status: 'in progress' }, () => {
