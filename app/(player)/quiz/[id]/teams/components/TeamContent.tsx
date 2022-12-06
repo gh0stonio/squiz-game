@@ -8,17 +8,17 @@ import useAuth from '~/shared/hooks/useAuth';
 
 import TeamList from './TeamList';
 
+function TeamListWrapper() {
+  const { teams } = useTeam();
+  return teams ? <TeamList /> : <p>no teams available</p>;
+}
+
 export default function TeamContent() {
   const { quiz } = useQuiz();
-  const { teams } = useTeam();
 
   return match(quiz)
-    .with({ status: 'in progress' }, () => {
-      return <p>Quiz ongoing... can&apos;t change now</p>;
-    })
-    .with({ status: 'ready' }, () =>
-      teams ? <TeamList /> : <p>no teams available</p>,
-    )
+    .with({ status: 'in progress' }, () => <TeamListWrapper />)
+    .with({ status: 'ready' }, () => <TeamListWrapper />)
     .with({ status: 'finished' }, () => {
       return <p>Quiz over, thanks for your participation!</p>;
     })

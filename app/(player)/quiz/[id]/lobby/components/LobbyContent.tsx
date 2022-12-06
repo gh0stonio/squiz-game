@@ -1,5 +1,6 @@
 'use client';
 import 'client-only';
+import { TfiFaceSad } from 'react-icons/tfi';
 import { match, P } from 'ts-pattern';
 
 import useQuiz from '~/(player)/quiz/[id]/hooks/useQuiz';
@@ -15,12 +16,23 @@ export default function LobbyContent() {
   return match(quiz)
     .with({ status: 'ready' }, () => {
       return myTeam ? (
-        <p>Please wait for the quiz to start</p>
+        <p>The game will start soon, be ready !</p>
       ) : (
-        <p>Please choose your team first to participate</p>
+        <p>
+          <p>Please choose your team first to participate</p>
+        </p>
       );
     })
     .with({ status: 'in progress' }, () => {
+      if (!myTeam) {
+        return (
+          <p>
+            <TfiFaceSad className="h-10 w-10" />
+            Oh no the quiz has started but you don&apos;t have a team yet, join
+            one right now to participate !
+          </p>
+        );
+      }
       return ongoingQuestion ? (
         ongoingQuestion.status === 'correcting' ? (
           <Correction question={ongoingQuestion} />

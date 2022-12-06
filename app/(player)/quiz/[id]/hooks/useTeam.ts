@@ -10,6 +10,7 @@ import {
   collection,
   onSnapshot,
   query,
+  arrayUnion,
 } from 'firebase/firestore';
 import React from 'react';
 import { uid } from 'uid';
@@ -127,6 +128,36 @@ export default function useTeam() {
     [checkIfLeader, user],
   );
 
+  const joinTeam = React.useCallback(
+    async (team: Team) => {
+      if (!user) return;
+
+      setIsChangeOngoing(true);
+
+      await updateDoc(doc(db, 'teams', team.id), {
+        members: arrayUnion(user),
+      });
+
+      setIsChangeOngoing(false);
+    },
+    [user],
+  );
+
+  const leaveTeam = React.useCallback(
+    async (team: Team) => {
+      if (!user) return;
+
+      setIsChangeOngoing(true);
+
+      await updateDoc(doc(db, 'teams', team.id), {
+        members: arrayRemove(user),
+      });
+
+      setIsChangeOngoing(false);
+    },
+    [user],
+  );
+
   return {
     teams: result.data,
     myTeam,
@@ -136,5 +167,7 @@ export default function useTeam() {
     editTeam,
     deleteTeam,
     kickPlayer,
+    joinTeam,
+    leaveTeam,
   };
 }

@@ -3,7 +3,7 @@ import 'client-only';
 import clsx from 'clsx';
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { HiOutlineUser } from 'react-icons/hi';
 import React from 'react';
 
