@@ -11,6 +11,7 @@ import {
   onSnapshot,
   query,
   arrayUnion,
+  where,
 } from 'firebase/firestore';
 import React from 'react';
 import { uid } from 'uid';
@@ -51,8 +52,9 @@ export default function useTeam() {
   // Listening for quiz teams changes
   React.useEffect(() => {
     const teamsQuery = query(
-      collection(db, 'teams').withConverter(genericConverter<Team>()),
-    );
+      collection(db, 'teams'),
+      where('quizId', '==', quiz.id),
+    ).withConverter(genericConverter<Team>());
     const unsubscribe = onSnapshot(teamsQuery, (teamsSnapshot) => {
       const teams = teamsSnapshot.docs.map((doc) => doc.data());
       queryClient.setQueryData<Team[]>(['teams', quiz.id], teams);
