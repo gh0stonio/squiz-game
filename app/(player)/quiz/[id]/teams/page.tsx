@@ -1,6 +1,6 @@
 import 'server-only';
 
-import MainContent from './components/MainContent';
+import TeamContent from './components/TeamContent';
 
 export default async function QuizTeamPage() {
   return (
@@ -14,7 +14,7 @@ export default async function QuizTeamPage() {
         </h5>
       </div>
 
-      <MainContent />
+      <TeamContent />
 
       <div id="team-form-modal" />
     </div>

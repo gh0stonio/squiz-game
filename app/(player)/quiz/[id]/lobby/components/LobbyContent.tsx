@@ -17,7 +17,7 @@ export default function LobbyContent() {
       return myTeam ? (
         <p>Please wait for the quiz to start</p>
       ) : (
-        <p>Please choose your team first</p>
+        <p>Please choose your team first to participate</p>
       );
     })
     .with({ status: 'in progress' }, () => {

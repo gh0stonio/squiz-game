@@ -59,7 +59,11 @@ export default function useAuth() {
 
     setTokenCookie(result.user);
 
-    router.push(referer || '/');
+    if (referer) {
+      router.push(referer || '/');
+    } else {
+      setTimeout(() => router.refresh(), 1000);
+    }
   }, [referer, router]);
 
   const logOut = React.useCallback(async () => {
