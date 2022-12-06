@@ -140,7 +140,7 @@ export function useQuiz() {
 
   const saveAnswersCorrection = React.useCallback(
     async (answers: Question['answers']) => {
-      if (!currentQuestion) return;
+      if (!currentQuestion || !quiz) return;
 
       await setDoc(
         doc(db, 'questions', currentQuestion.id).withConverter(
@@ -152,8 +152,20 @@ export function useQuiz() {
           answers,
         },
       );
+
+      if (!nextQuestion) {
+        await updateDoc(
+          doc(db, 'quizzes', quiz.id).withConverter(genericConverter<Quiz>()),
+          {
+            ...quiz,
+            status: 'finished',
+          },
+        );
+
+        await queryClient.refetchQueries({ queryKey: quizQueryKey });
+      }
     },
-    [currentQuestion],
+    [currentQuestion, nextQuestion, quiz, quizQueryKey],
   );
 
   return {

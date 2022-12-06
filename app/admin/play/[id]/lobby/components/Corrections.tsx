@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import React from 'react';
 
 import type { Question } from '~/shared/types';
@@ -10,6 +11,11 @@ export default function Corrections() {
   const [answers, setAnswers] = React.useState<Question['answers']>(
     currentQuestion?.answers || [],
   );
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const submitCorrections = React.useCallback(async () => {
+    setIsSubmitting(true);
+    await saveAnswersCorrection(answers);
+  }, [answers, saveAnswersCorrection]);
 
   if (!currentQuestion) return <span>This should not happen</span>;
 
@@ -66,8 +72,11 @@ export default function Corrections() {
 
       <div className="flex w-full items-center justify-center pt-4">
         <button
-          className="btn-secondary btn-sm btn w-36"
-          onClick={() => saveAnswersCorrection(answers)}
+          className={clsx('btn btn-secondary btn-sm w-36', {
+            'btn-disabled': isSubmitting,
+            loading: isSubmitting,
+          })}
+          onClick={submitCorrections}
         >
           Save
         </button>

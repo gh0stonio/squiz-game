@@ -36,8 +36,15 @@ export default function CurrentQuestion() {
     }
   }, [router, sendQuestionExpired, timer]);
 
+  if (quiz?.status === 'finished')
+    return <p>Quiz finished, to replay just reset it !</p>;
+
   if (!currentQuestion)
-    return <p>No question ready, please reset the quiz !</p>;
+    return (
+      <p>
+        No question available, should not happen if the quiz is not finished !
+      </p>
+    );
 
   return (
     <div className="flex h-full flex-col">
