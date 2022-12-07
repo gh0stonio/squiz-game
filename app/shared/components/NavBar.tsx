@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { HiOutlineUser } from 'react-icons/hi';
+import { HiUserGroup, HiHome, HiOutlineUser } from 'react-icons/hi';
 import React from 'react';
 
 import useAuth from '~/shared/hooks/useAuth';
@@ -22,43 +22,44 @@ export default function NavBar({ isAdmin }: NavBarProps) {
     pathName?.includes('lobby') || pathName?.includes('teams');
 
   return (
-    <div className="navbar my-10 w-[95%] rounded-xl bg-gray-100 px-4">
-      <div className="navbar-start">
+    <div className="navbar flex h-full w-[5%] max-w-min flex-col items-center justify-between rounded-xl bg-gray-100">
+      <div className="navbar-start flex w-full items-center justify-center pt-2">
         <div className="flex items-center justify-center">
           <Image src={Logo} alt="logo" height={40} priority />
-          <p className="pl-4 text-2xl font-semibold">
-            Squiz Game {isAdmin && ' - Admin'}
-          </p>
         </div>
       </div>
 
       {shouldDisplayCenterNav && (
-        <div className="navbar-center lg:flex">
-          <div className="btn-group">
+        <ul className="menu rounded-box bg-gray-600">
+          <li>
             <Link
-              className={clsx('btn no-animation', {
-                'btn-active': pathName?.includes('lobby'),
-              })}
               href={pathName?.replace('teams', 'lobby') as string}
-            >
-              Lobby
-            </Link>
-            <Link
-              className={clsx('btn no-animation', {
-                'btn-active': pathName?.includes('teams'),
+              className={clsx('tooltip tooltip-right', {
+                active: pathName?.includes('lobby'),
               })}
-              href={pathName?.replace('lobby', 'teams') as string}
+              data-tip="Quiz Lobby"
             >
-              Teams
+              <HiHome className="h-5 w-5 text-white" />
             </Link>
-          </div>
-        </div>
+          </li>
+          <li>
+            <Link
+              href={pathName?.replace('lobby', 'teams') as string}
+              className={clsx('tooltip tooltip-right', {
+                active: pathName?.includes('teams'),
+              })}
+              data-tip="Quiz Teams"
+            >
+              <HiUserGroup className="h-5 w-5 text-white" />
+            </Link>
+          </li>
+        </ul>
       )}
 
-      <div className="navbar-end">
+      <div className="navbar-end flex w-full items-center justify-center">
         <div className="flex-none">
-          <div className="dropdown-end dropdown">
-            <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
+          <div className="dropdown-top dropdown">
+            <label tabIndex={0} className="btn-ghost btn-circle avatar btn">
               <div className="w-10 rounded-full">
                 {user?.photoURL ? (
                   <Image

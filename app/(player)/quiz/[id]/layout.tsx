@@ -37,10 +37,10 @@ export default async function PlayerLayout({
     <QueryContext
       initialData={{ quiz, teams, ongoingQuestion, questionsCount }}
     >
-      <div className="flex h-full w-full flex-col items-center justify-center">
+      <div className="flex h-full w-full items-center justify-center gap-3 px-3 pb-3 pt-11">
         <NavBar />
 
-        <div className="m-auto mb-10 h-5/6 w-[95%] rounded-xl bg-gray-100 shadow-xl">
+        <div className="h-full w-full rounded-xl bg-gray-100 shadow-xl">
           {!user ? (
             <span className="flex h-full w-full items-center justify-center text-3xl">
               Please log in first, it&apos;s up there on the right{' '}

@@ -9,10 +9,10 @@ export default async function AdminLayout({
 }: React.PropsWithChildren) {
   return (
     <QueryContextProvider>
-      <div className="flex h-full w-full flex-col items-center justify-center">
+      <div className="flex h-full w-full items-center justify-center gap-3 px-3 pb-3 pt-11">
         <NavBar isAdmin />
 
-        <div className="m-auto mb-10 h-5/6 w-[95%] rounded-xl bg-gray-100 shadow-xl">
+        <div className="h-full w-full rounded-xl bg-gray-100 shadow-xl">
           <div className="h-full w-full">{children}</div>
         </div>
       </div>
