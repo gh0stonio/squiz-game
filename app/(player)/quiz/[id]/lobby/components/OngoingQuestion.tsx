@@ -19,7 +19,7 @@ interface OngoingQuestionProps {
 
 export default function OngoingQuestion({ question }: OngoingQuestionProps) {
   const { questionsCount, sendAnswer } = useQuiz();
-  const { myTeam } = useTeam();
+  const { myTeam, checkIfLeader } = useTeam();
   const timer = useTimer(question);
   const duration = timer.timeLeft
     ? intervalToDuration({
@@ -30,10 +30,10 @@ export default function OngoingQuestion({ question }: OngoingQuestionProps) {
 
   const [answer, setAnswer] = React.useState('');
   React.useEffect(() => {
-    if (myTeam && timer.isExpired) {
+    if (myTeam && timer.isExpired && checkIfLeader(myTeam)) {
       sendAnswer(myTeam, answer);
     }
-  }, [answer, myTeam, sendAnswer, timer.isExpired]);
+  }, [answer, checkIfLeader, myTeam, sendAnswer, timer.isExpired]);
 
   const [imageUrl, setImageUrl] = React.useState<string>();
   React.useEffect(() => {
@@ -96,8 +96,9 @@ export default function OngoingQuestion({ question }: OngoingQuestionProps) {
 
       <div className="flex w-full items-center justify-between">
         <span className="italic">
-          No worry, your answer will be automatically sent at the end of the
-          timer.
+          No worry, your team admin answer will be automatically sent at the end
+          of the timer. <br />
+          (for now other members answers are useless).
         </span>
         <span>
           Time left:{' '}
