@@ -133,9 +133,10 @@ export function useQuiz() {
       updatedQuestion,
     );
 
+    // TODO: listen for updates
     setTimeout(() => {
       queryClient.refetchQueries({ queryKey: questionsQueryKey });
-    }, 1000);
+    }, 2000);
   }, [currentQuestion, questionsQueryKey, quiz]);
 
   const saveAnswersCorrection = React.useCallback(
@@ -161,9 +162,9 @@ export function useQuiz() {
             status: 'finished',
           },
         );
-
-        await queryClient.refetchQueries({ queryKey: quizQueryKey });
       }
+
+      return queryClient.refetchQueries({ queryKey: quizQueryKey });
     },
     [currentQuestion, nextQuestion, quiz, quizQueryKey],
   );
