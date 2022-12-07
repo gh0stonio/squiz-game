@@ -37,9 +37,12 @@ export default function useAuth() {
   const params = useSearchParams();
 
   const referer = params.get('referer');
-  if (user && referer) {
-    router.push(referer);
-  }
+
+  React.useEffect(() => {
+    if (user && referer) {
+      router.push(referer);
+    }
+  }, [referer, router, user]);
 
   const logIn = React.useCallback(async () => {
     const provider = new GoogleAuthProvider();
@@ -57,7 +60,7 @@ export default function useAuth() {
       return auth.signOut();
     }
 
-    setTokenCookie(result.user);
+    await setTokenCookie(result.user);
 
     if (referer) {
       router.push(referer || '/');
@@ -82,7 +85,7 @@ export default function useAuth() {
         return;
       }
 
-      setTokenCookie(firebaseUser);
+      await setTokenCookie(firebaseUser);
 
       if (!user) {
         setUser({
