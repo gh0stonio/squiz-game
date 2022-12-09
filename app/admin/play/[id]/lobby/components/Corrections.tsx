@@ -1,14 +1,17 @@
 import clsx from 'clsx';
+import { onSnapshot, doc } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
+import { TailSpin } from 'react-loader-spinner';
 import React from 'react';
 
+import { db, genericConverter } from '~/shared/lib/firebaseClient';
 import type { Question } from '~/shared/types';
 
 import { useQuiz } from '../hooks';
 
 export default function Corrections() {
   const router = useRouter();
-  const { currentQuestion, saveAnswersCorrection } = useQuiz();
+  const { quiz, currentQuestion, saveAnswersCorrection } = useQuiz();
 
   const [answers, setAnswers] = React.useState<Question['answers']>(
     currentQuestion?.answers || [],
@@ -21,6 +24,23 @@ export default function Corrections() {
     router.refresh();
   }, [answers, router, saveAnswersCorrection]);
 
+  // Listening for answers changes (useful for answers update)
+  React.useEffect(() => {
+    if (!currentQuestion) return;
+
+    const unsubscribe = onSnapshot(
+      doc(db, 'questions', currentQuestion.id).withConverter(
+        genericConverter<Question>(),
+      ),
+      (doc) => {
+        console.log(doc);
+        setAnswers(doc.data()?.answers);
+      },
+    );
+
+    return unsubscribe;
+  }, [currentQuestion, quiz]);
+
   if (!currentQuestion) return <span>This should not happen</span>;
 
   return (
@@ -30,7 +50,19 @@ export default function Corrections() {
           <div className="-mx-4 overflow-auto px-4 pb-8">
             <div className="grid grid-cols-4 gap-4">
               {!answers || answers.length === 0 ? (
-                <span>No answers yet</span>
+                <>
+                  <span>No answers yet, getting them ...</span>
+                  <TailSpin
+                    height="30"
+                    width="30"
+                    color="#4fa94d"
+                    ariaLabel="tail-spin-loading"
+                    radius="1"
+                    wrapperStyle={{}}
+                    wrapperClass=""
+                    visible={true}
+                  />
+                </>
               ) : (
                 answers.map((answer, index) => (
                   <div key={index} className="card h-40 bg-base-100 shadow-xl">

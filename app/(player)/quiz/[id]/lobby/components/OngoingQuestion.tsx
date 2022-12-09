@@ -1,17 +1,18 @@
 'use client';
 import 'client-only';
-import { intervalToDuration } from 'date-fns';
 import { getDownloadURL, ref } from 'firebase/storage';
 import Image from 'next/image';
 import { TailSpin } from 'react-loader-spinner';
-import React from 'react';
+import React, { useRef } from 'react';
 
 import useQuiz from '~/(player)/quiz/[id]/hooks/useQuiz';
-import { useTimer } from '~/shared/hooks/useTimer';
+import Timer, { getTimeLeft } from '~/shared/components/Timer';
 import { storage } from '~/shared/lib/firebaseClient';
 import { type Question } from '~/shared/types';
 
 import useTeam from '../../hooks/useTeam';
+
+import Correction from './Correction';
 
 interface OngoingQuestionProps {
   question: Question;
@@ -20,20 +21,24 @@ interface OngoingQuestionProps {
 export default function OngoingQuestion({ question }: OngoingQuestionProps) {
   const { questionsCount, sendAnswer } = useQuiz();
   const { myTeam, checkIfLeader } = useTeam();
-  const timer = useTimer(question);
-  const duration = timer.timeLeft
-    ? intervalToDuration({
-        start: 0,
-        end: timer.timeLeft * 1000,
-      })
-    : undefined;
 
-  const [answer, setAnswer] = React.useState('');
-  React.useEffect(() => {
-    if (myTeam && timer.isExpired && checkIfLeader(myTeam)) {
-      sendAnswer(myTeam, answer);
+  const answerRef = useRef('');
+
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [isCorrecting, setIsCorrecting] = React.useState(
+    getTimeLeft(question) === 0,
+  );
+
+  const onTimerDone = React.useCallback(async () => {
+    setIsSubmitting(true);
+
+    if (myTeam && checkIfLeader(myTeam)) {
+      await sendAnswer(myTeam, answerRef.current);
+
+      setIsCorrecting(true);
+      setIsSubmitting(false);
     }
-  }, [answer, checkIfLeader, myTeam, sendAnswer, timer.isExpired]);
+  }, [answerRef, checkIfLeader, myTeam, sendAnswer]);
 
   const [imageUrl, setImageUrl] = React.useState<string>();
   React.useEffect(() => {
@@ -48,6 +53,8 @@ export default function OngoingQuestion({ question }: OngoingQuestionProps) {
 
     fetchingUrl(question.image);
   }, [question?.image]);
+
+  if (isCorrecting) return <Correction question={question} />;
 
   return (
     <>
@@ -87,8 +94,9 @@ export default function OngoingQuestion({ question }: OngoingQuestionProps) {
             <span className="text-lg">Your team answer:</span>
             <textarea
               className="textarea-bordered textarea h-[80%] w-full pb-6 text-lg"
+              disabled={isSubmitting}
               name="answer"
-              onChange={(event) => setAnswer(event.target.value)}
+              onChange={(event) => (answerRef.current = event.target.value)}
             />
           </div>
         </div>
@@ -100,17 +108,8 @@ export default function OngoingQuestion({ question }: OngoingQuestionProps) {
           of the timer. <br />
           (for now other members answers are useless).
         </span>
-        <span>
-          Time left:{' '}
-          <span className="countdown font-mono font-semibold">
-            {/* 
-                // @ts-ignore */}
-            <span style={{ '--value': duration?.minutes || 0 }}></span>:
-            {/* 
-                // @ts-ignore */}
-            <span style={{ '--value': duration?.seconds }}></span>
-          </span>
-        </span>
+
+        <Timer question={question} onDone={onTimerDone} />
       </div>
     </>
   );

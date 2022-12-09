@@ -72,7 +72,7 @@ export default function useQuiz() {
       collection(db, 'questions'),
       orderBy('order'),
       where('quizId', '==', result.data.id),
-      where('status', 'in', ['in progress', 'correcting']),
+      where('status', '==', 'in progress'),
       limit(1),
     ).withConverter(genericConverter<Question>());
     const unsubscribe = onSnapshot(ongoingQuestionQuery, (snapshot) => {
@@ -83,10 +83,10 @@ export default function useQuiz() {
   }, [result.data?.id]);
 
   const sendAnswer = React.useCallback(
-    (myTeam: Team, answer: string) => {
+    async (myTeam: Team, answer: string) => {
       if (!ongoingQuestion) return;
 
-      updateDoc(
+      await updateDoc(
         doc(db, 'questions', ongoingQuestion.id).withConverter(
           genericConverter<Question>(),
         ),

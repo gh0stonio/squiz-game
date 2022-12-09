@@ -1,40 +1,24 @@
 'use client';
 import 'client-only';
 import clsx from 'clsx';
-import { intervalToDuration } from 'date-fns';
-import { useRouter } from 'next/navigation';
 import React from 'react';
-import { match } from 'ts-pattern';
+import { match, P } from 'ts-pattern';
 
-import { useTimer } from '~/shared/hooks/useTimer';
+import Timer, { getTimeLeft } from '~/shared/components/Timer';
 
 import { useQuiz } from '../hooks';
 
 import Corrections from './Corrections';
 
 export default function CurrentQuestion() {
-  const router = useRouter();
-  const {
-    quiz,
-    questions,
-    currentQuestion,
-    pushQuestion,
-    sendQuestionExpired,
-  } = useQuiz();
-  const timer = useTimer(currentQuestion);
-  const duration = timer.timeLeft
-    ? intervalToDuration({
-        start: 0,
-        end: timer.timeLeft * 1000,
-      })
-    : undefined;
+  const { quiz, questions, currentQuestion, pushQuestion } = useQuiz();
+  const [isCorrecting, setIsCorrecting] = React.useState(
+    currentQuestion && getTimeLeft(currentQuestion) === 0,
+  );
 
   React.useEffect(() => {
-    timer.setIsExpired(false);
-    if (timer.isExpired) {
-      sendQuestionExpired();
-    }
-  }, [router, sendQuestionExpired, timer]);
+    setIsCorrecting(currentQuestion && getTimeLeft(currentQuestion) === 0);
+  }, [currentQuestion]);
 
   if (quiz?.status === 'finished')
     return <p>Quiz finished, to replay just reset it !</p>;
@@ -53,7 +37,7 @@ export default function CurrentQuestion() {
           Current Question - {currentQuestion.order}/{questions.length}
         </h3>
         <button
-          className={clsx('btn btn-secondary btn-sm', {
+          className={clsx('btn-secondary btn-sm btn', {
             'btn-disabled':
               quiz?.status !== 'in progress' ||
               currentQuestion.status !== 'ready',
@@ -84,30 +68,24 @@ export default function CurrentQuestion() {
         </div>
       </div>
 
-      {match(currentQuestion)
-        .with({ status: 'in progress' }, () => {
-          return (
-            <div>
-              Time left:{' '}
-              <span className="countdown font-mono">
-                {/* 
-                // @ts-ignore */}
-                <span style={{ '--value': duration?.minutes || 0 }}></span>:
-                {/* 
-                // @ts-ignore */}
-                <span style={{ '--value': duration?.seconds }}></span>
-              </span>
-            </div>
-          );
-        })
-        .with({ status: 'correcting' }, () => {
-          return (
-            <div className="h-full pt-6">
-              <Corrections />
-            </div>
-          );
-        })
-        .otherwise(() => null)}
+      <div className="flex h-full w-full pt-4">
+        {match(currentQuestion)
+          .with({ status: 'in progress' }, () => {
+            if (isCorrecting) return <Corrections />;
+
+            return (
+              <div>
+                <Timer
+                  question={currentQuestion}
+                  onDone={async () => {
+                    setIsCorrecting(true);
+                  }}
+                />
+              </div>
+            );
+          })
+          .otherwise(() => null)}
+      </div>
     </div>
   );
 }

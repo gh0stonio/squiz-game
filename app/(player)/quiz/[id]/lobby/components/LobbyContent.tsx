@@ -1,12 +1,11 @@
 'use client';
 import 'client-only';
 import { TfiFaceSad } from 'react-icons/tfi';
-import { match, P } from 'ts-pattern';
+import { match } from 'ts-pattern';
 
 import useQuiz from '~/(player)/quiz/[id]/hooks/useQuiz';
 import useTeam from '~/(player)/quiz/[id]/hooks/useTeam';
 
-import Correction from './Correction';
 import OngoingQuestion from './OngoingQuestion';
 
 export default function LobbyContent() {
@@ -32,11 +31,7 @@ export default function LobbyContent() {
         );
       }
       return ongoingQuestion ? (
-        ongoingQuestion.status === 'correcting' ? (
-          <Correction question={ongoingQuestion} />
-        ) : (
-          <OngoingQuestion question={ongoingQuestion} />
-        )
+        <OngoingQuestion question={ongoingQuestion} />
       ) : (
         <p>Quiz ongoing... wait for next question</p>
       );

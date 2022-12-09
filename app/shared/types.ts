@@ -27,7 +27,7 @@ export interface Question {
   image?: string;
   createdAt: number;
   updatedAt?: number;
-  status: 'ready' | 'in progress' | 'correcting' | 'done';
+  status: 'ready' | 'in progress' | 'done';
   startedAt?: number;
 
   answers?: { team: string; value: string; score?: number }[];

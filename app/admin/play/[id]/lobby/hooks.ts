@@ -1,8 +1,6 @@
 'use client';
 import 'client-only';
 import { updateDoc, doc, setDoc } from 'firebase/firestore';
-import { Router } from 'next/router';
-import result from 'postcss/lib/result';
 import React from 'react';
 
 import { queryClient } from '~/admin/context';
@@ -77,8 +75,7 @@ export function useQuiz() {
     if (!questions) return;
 
     const onGoingQuestion = questions.find(
-      (question) =>
-        question.status === 'in progress' || question.status === 'correcting',
+      (question) => question.status === 'in progress',
     );
 
     return (
@@ -116,27 +113,6 @@ export function useQuiz() {
         _question.id === currentQuestion.id ? updatedQuestion : _question,
       ),
     );
-  }, [currentQuestion, questionsQueryKey, quiz]);
-
-  const sendQuestionExpired = React.useCallback(async () => {
-    if (!quiz || !currentQuestion) return;
-
-    const updatedQuestion: Question = {
-      ...currentQuestion,
-      status: 'correcting',
-    };
-
-    await setDoc(
-      doc(db, 'questions', currentQuestion.id).withConverter(
-        genericConverter<Question>(),
-      ),
-      updatedQuestion,
-    );
-
-    // TODO: listen for updates
-    setTimeout(() => {
-      queryClient.refetchQueries({ queryKey: questionsQueryKey });
-    }, 2000);
   }, [currentQuestion, questionsQueryKey, quiz]);
 
   const saveAnswersCorrection = React.useCallback(
@@ -178,7 +154,6 @@ export function useQuiz() {
     currentQuestion,
     nextQuestion,
     pushQuestion,
-    sendQuestionExpired,
     saveAnswersCorrection,
   };
 }
