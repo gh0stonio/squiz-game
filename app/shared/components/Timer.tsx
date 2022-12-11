@@ -63,7 +63,7 @@ export default function Timer({ question, onDone }: TimerProps) {
   }, [onDone, question, timeLeftRef, onDoneCalledRef]);
 
   return (
-    <span>
+    <span className="text-xl">
       Time left:{' '}
       <span className="countdown font-mono font-semibold">
         {/* 

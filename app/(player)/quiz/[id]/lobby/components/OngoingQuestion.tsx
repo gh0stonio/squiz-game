@@ -2,6 +2,7 @@
 import 'client-only';
 import { getDownloadURL, ref } from 'firebase/storage';
 import Image from 'next/image';
+import { FaQuestionCircle } from 'react-icons/fa';
 import { TailSpin } from 'react-loader-spinner';
 import React, { useRef } from 'react';
 
@@ -59,36 +60,49 @@ export default function OngoingQuestion({ question }: OngoingQuestionProps) {
   return (
     <>
       <div className="flex w-full flex-1 flex-col items-start justify-start">
-        <h2 className="mb-4 text-xl font-bold">
-          Question {question.order}/{questionsCount}
-        </h2>
+        <div className="flex w-full items-start justify-between">
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold">
+              Question {question.order}/{questionsCount}
+            </h2>
+            <h3 className="text-lg italic">
+              Maximum Points: {question.maxPoints}
+            </h3>
+          </div>
+          <Timer question={question} onDone={onTimerDone} />
+        </div>
 
         <div className="flex h-full w-full items-start">
-          <div className="h-full w-3/6">
-            <span className="text-xl">{question.text}</span>
-            <div className="flex h-[80%] items-center justify-center">
-              {question?.image &&
-                (imageUrl ? (
-                  <Image
-                    src={imageUrl}
-                    alt="question image"
-                    width={300}
-                    height={300}
-                    loading="eager"
-                  />
-                ) : (
-                  <TailSpin
-                    height="30"
-                    width="30"
-                    color="#4fa94d"
-                    ariaLabel="tail-spin-loading"
-                    radius="1"
-                    wrapperStyle={{}}
-                    wrapperClass=""
-                    visible={true}
-                  />
-                ))}
+          <div className=" flex h-full w-3/6 flex-col items-center justify-center gap-4">
+            <div className="flex w-full gap-2">
+              <FaQuestionCircle className="h-8 w-8" />
+              <span className="text-xl">{question.text}</span>
             </div>
+            {question?.image && (
+              <div className="flex h-[70%] items-center justify-center">
+                {question?.image &&
+                  (imageUrl ? (
+                    <Image
+                      src={imageUrl}
+                      alt="question image"
+                      width={300}
+                      height={300}
+                      loading="eager"
+                    />
+                  ) : (
+                    <TailSpin
+                      height="30"
+                      width="30"
+                      color="#4fa94d"
+                      ariaLabel="tail-spin-loading"
+                      radius="1"
+                      wrapperStyle={{}}
+                      wrapperClass=""
+                      visible={true}
+                    />
+                  ))}
+              </div>
+            )}
           </div>
           <div className="h-full w-3/6">
             <span className="text-lg">Your team answer:</span>
@@ -98,18 +112,13 @@ export default function OngoingQuestion({ question }: OngoingQuestionProps) {
               name="answer"
               onChange={(event) => (answerRef.current = event.target.value)}
             />
+            <span className="italic">
+              No worry, your team admin answer will be automatically sent at the
+              end of the timer. <br />
+              (for now other members answers are not used yet)
+            </span>
           </div>
         </div>
-      </div>
-
-      <div className="flex w-full items-center justify-between">
-        <span className="italic">
-          No worry, your team admin answer will be automatically sent at the end
-          of the timer. <br />
-          (for now other members answers are useless).
-        </span>
-
-        <Timer question={question} onDone={onTimerDone} />
       </div>
     </>
   );
