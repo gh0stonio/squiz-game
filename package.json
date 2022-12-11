@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@datadog/datadog-api-client": "^1.6.0",
     "@tanstack/react-query": "^4.19.1",
     "clsx": "^1.2.1",
     "daisyui": "^2.42.1",

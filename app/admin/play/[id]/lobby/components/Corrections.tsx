@@ -1,3 +1,5 @@
+'use client';
+import 'client-only';
 import clsx from 'clsx';
 import { onSnapshot, doc } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
@@ -7,7 +9,7 @@ import React from 'react';
 import { db, genericConverter } from '~/shared/lib/firebaseClient';
 import type { Question } from '~/shared/types';
 
-import { useQuiz } from '../hooks';
+import { useQuiz, sendResults } from '../hooks';
 
 export default function Corrections() {
   const router = useRouter();
@@ -24,11 +26,15 @@ export default function Corrections() {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const submitCorrections = React.useCallback(async () => {
+    if (!currentQuestion) return;
+
+    await sendResults({ ...currentQuestion, answers });
+
     await saveAnswersCorrection(answers);
 
     setIsSubmitting(false);
     setReadyForNextQuestion(true);
-  }, [answers, saveAnswersCorrection]);
+  }, [currentQuestion, answers, saveAnswersCorrection]);
   const goNext = React.useCallback(async () => {
     await goToNextQuestion();
     router.refresh();
@@ -87,6 +93,7 @@ export default function Corrections() {
                         <td>
                           <select
                             className="select-bordered select select-sm w-32"
+                            value={answer.score}
                             onChange={(event) => {
                               setAnswers((_answers) =>
                                 _answers?.map((_answer) =>

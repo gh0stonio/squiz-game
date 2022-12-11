@@ -9,6 +9,17 @@ import { Question, Quiz } from '~/shared/types';
 
 import { adminQuizLobbyPageDataContext } from './context';
 
+export async function sendResults(question: Question) {
+  await fetch('/api/sendResults', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(question),
+  });
+}
+
 export function useQuiz() {
   const {
     quiz: { queryKey: quizQueryKey, query: quizQuery },
