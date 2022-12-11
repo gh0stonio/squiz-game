@@ -1,5 +1,7 @@
 'use client';
 import 'client-only';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { TfiFaceSad } from 'react-icons/tfi';
 import { match } from 'ts-pattern';
 
@@ -11,13 +13,24 @@ import OngoingQuestion from './OngoingQuestion';
 export default function LobbyContent() {
   const { quiz, ongoingQuestion } = useQuiz();
   const { myTeam } = useTeam();
+  const pathName = usePathname();
 
   return match(quiz)
     .with({ status: 'ready' }, () => {
       return myTeam ? (
         <p>The game will start soon, be ready !</p>
       ) : (
-        <p>Please choose your team first to participate</p>
+        <p>
+          Choose your team first or create one to participate (only team creator
+          can submit answer on behalf of the team), it&apos;s{' '}
+          <Link
+            href={pathName?.replace('lobby', 'teams') as string}
+            className="link-secondary link"
+          >
+            here
+          </Link>
+          .
+        </p>
       );
     })
     .with({ status: 'in progress' }, () => {
