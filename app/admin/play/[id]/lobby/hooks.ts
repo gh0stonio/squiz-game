@@ -125,25 +125,38 @@ export function useQuiz() {
         ),
         {
           ...currentQuestion,
-          status: 'done',
           answers,
         },
       );
-
-      if (!nextQuestion) {
-        await updateDoc(
-          doc(db, 'quizzes', quiz.id).withConverter(genericConverter<Quiz>()),
-          {
-            ...quiz,
-            status: 'finished',
-          },
-        );
-      }
-
-      return queryClient.refetchQueries({ queryKey: quizQueryKey });
     },
-    [currentQuestion, nextQuestion, quiz, quizQueryKey],
+    [currentQuestion, quiz],
   );
+
+  const goToNextQuestion = React.useCallback(async () => {
+    if (!currentQuestion || !quiz) return;
+
+    await setDoc(
+      doc(db, 'questions', currentQuestion.id).withConverter(
+        genericConverter<Question>(),
+      ),
+      {
+        ...currentQuestion,
+        status: 'done',
+      },
+    );
+
+    if (!nextQuestion) {
+      await updateDoc(
+        doc(db, 'quizzes', quiz.id).withConverter(genericConverter<Quiz>()),
+        {
+          ...quiz,
+          status: 'finished',
+        },
+      );
+    }
+
+    return queryClient.refetchQueries({ queryKey: quizQueryKey });
+  }, [currentQuestion, nextQuestion, quiz, quizQueryKey]);
 
   return {
     quiz,
@@ -155,5 +168,6 @@ export function useQuiz() {
     nextQuestion,
     pushQuestion,
     saveAnswersCorrection,
+    goToNextQuestion,
   };
 }

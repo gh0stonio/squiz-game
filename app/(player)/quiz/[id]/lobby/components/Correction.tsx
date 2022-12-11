@@ -32,6 +32,10 @@ export default function Correction({ question }: CorrectionProps) {
                       <h2 className="card-title flex w-full items-center justify-between">
                         <p>Team: {answer.team}</p>
                       </h2>
+                      <p>
+                        Score:{' '}
+                        {answer.score !== undefined ? answer.score : '...'}
+                      </p>
                       <p className="max-h-36 overflow-auto">
                         Answer: {answer.value}
                       </p>

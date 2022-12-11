@@ -11,18 +11,28 @@ import { useQuiz } from '../hooks';
 
 export default function Corrections() {
   const router = useRouter();
-  const { quiz, currentQuestion, saveAnswersCorrection } = useQuiz();
+  const { quiz, currentQuestion, saveAnswersCorrection, goToNextQuestion } =
+    useQuiz();
 
+  const [readyForNextQuestion, setReadyForNextQuestion] = React.useState(false);
   const [answers, setAnswers] = React.useState<Question['answers']>(
     currentQuestion?.answers || [],
   );
+  const canBeSubmitted = React.useMemo(() => {
+    return !answers?.some((answer) => answer.score === undefined);
+  }, [answers]);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+
   const submitCorrections = React.useCallback(async () => {
-    setIsSubmitting(true);
     await saveAnswersCorrection(answers);
 
+    setIsSubmitting(false);
+    setReadyForNextQuestion(true);
+  }, [answers, saveAnswersCorrection]);
+  const goNext = React.useCallback(async () => {
+    await goToNextQuestion();
     router.refresh();
-  }, [answers, router, saveAnswersCorrection]);
+  }, [goToNextQuestion, router]);
 
   // Listening for answers changes (useful for answers update)
   React.useEffect(() => {
@@ -32,10 +42,7 @@ export default function Corrections() {
       doc(db, 'questions', currentQuestion.id).withConverter(
         genericConverter<Question>(),
       ),
-      (doc) => {
-        console.log(doc);
-        setAnswers(doc.data()?.answers);
-      },
+      (doc) => setAnswers(doc.data()?.answers),
     );
 
     return unsubscribe;
@@ -93,12 +100,12 @@ export default function Corrections() {
                               );
                             }}
                           >
-                            <option disabled selected>
-                              Score
-                            </option>
+                            <option value="">Choose</option>
                             {[...Array(currentQuestion.maxPoints + 1)].map(
                               (x, i) => (
-                                <option key={i}>{i}</option>
+                                <option key={i} value={i}>
+                                  {i}
+                                </option>
                               ),
                             )}
                           </select>
@@ -111,15 +118,23 @@ export default function Corrections() {
             )}
           </div>
 
-          <div className="flex w-full items-center justify-center pt-4">
+          <div className="flex w-full items-center justify-center gap-6 pt-4">
             <button
               className={clsx('btn-secondary btn-sm btn w-36', {
-                'btn-disabled': isSubmitting,
+                'btn-disabled': !canBeSubmitted || isSubmitting,
                 loading: isSubmitting,
               })}
               onClick={submitCorrections}
             >
               Save
+            </button>
+            <button
+              className={clsx('btn-accent btn-sm btn w-36', {
+                'btn-disabled': !readyForNextQuestion,
+              })}
+              onClick={goNext}
+            >
+              Next
             </button>
           </div>
         </div>
