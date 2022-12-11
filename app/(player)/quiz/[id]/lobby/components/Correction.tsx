@@ -27,12 +27,14 @@ export default function Correction({ question }: CorrectionProps) {
                 <span>No answers yet</span>
               ) : (
                 question.answers.map((answer, index) => (
-                  <div key={index} className="card h-40 bg-base-100 shadow-xl">
+                  <div key={index} className="card bg-base-100 shadow-xl">
                     <div className="card-body">
                       <h2 className="card-title flex w-full items-center justify-between">
                         <p>Team: {answer.team}</p>
                       </h2>
-                      <p>Answer: {answer.value}</p>
+                      <p className="max-h-36 overflow-auto">
+                        Answer: {answer.value}
+                      </p>
                     </div>
                   </div>
                 ))

@@ -46,76 +46,83 @@ export default function Corrections() {
   return (
     <div className="flex h-full w-full flex-col">
       <div className="relative h-full w-full">
-        <div className="absolute top-0 left-0 right-0 bottom-0 flex h-full w-full flex-col">
-          <div className="-mx-4 overflow-auto px-4 pb-8">
-            <div className="grid grid-cols-4 gap-4">
-              {!answers || answers.length === 0 ? (
-                <>
-                  <span>No answers yet, getting them ...</span>
-                  <TailSpin
-                    height="30"
-                    width="30"
-                    color="#4fa94d"
-                    ariaLabel="tail-spin-loading"
-                    radius="1"
-                    wrapperStyle={{}}
-                    wrapperClass=""
-                    visible={true}
-                  />
-                </>
-              ) : (
-                answers.map((answer, index) => (
-                  <div key={index} className="card h-40 bg-base-100 shadow-xl">
-                    <div className="card-body">
-                      <h2 className="card-title flex w-full items-center justify-between">
-                        <p>Team: {answer.team}</p>
-                      </h2>
-                      <p>Answer: {answer.value}</p>
-                      <div className="card-actions flex justify-end pt-4">
-                        <select
-                          className="select-bordered select select-sm w-32"
-                          onChange={(event) => {
-                            setAnswers((_answers) =>
-                              _answers?.map((_answer) =>
-                                _answer.team === answer.team
-                                  ? {
-                                      ..._answer,
-                                      score: parseInt(event.target.value, 10),
-                                    }
-                                  : _answer,
+        <div className="absolute top-0 left-0 right-0 bottom-0 flex h-full w-full flex-col pt-8">
+          <div className="overflow-auto rounded-lg">
+            {!answers || answers.length === 0 ? (
+              <>
+                <span>No answers yet, getting them ...</span>
+                <TailSpin
+                  height="30"
+                  width="30"
+                  color="#4fa94d"
+                  ariaLabel="tail-spin-loading"
+                  radius="1"
+                  wrapperStyle={{}}
+                  wrapperClass=""
+                  visible={true}
+                />
+              </>
+            ) : (
+              <table className="table w-full">
+                <thead className="sticky top-0">
+                  <tr className="h-12 [&>th]:bg-gray-200">
+                    <th className="w-1/5">Team</th>
+                    <th className="w-3/5">Answer</th>
+                    <th className="w-1/5">Score</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {answers.map((answer, index) => {
+                    return (
+                      <tr key={index} className="h-12">
+                        <td>{answer.team}</td>
+                        <td className="whitespace-pre-wrap">{answer.value}</td>
+                        <td>
+                          <select
+                            className="select-bordered select select-sm w-32"
+                            onChange={(event) => {
+                              setAnswers((_answers) =>
+                                _answers?.map((_answer) =>
+                                  _answer.team === answer.team
+                                    ? {
+                                        ..._answer,
+                                        score: parseInt(event.target.value, 10),
+                                      }
+                                    : _answer,
+                                ),
+                              );
+                            }}
+                          >
+                            <option disabled selected>
+                              Score
+                            </option>
+                            {[...Array(currentQuestion.maxPoints + 1)].map(
+                              (x, i) => (
+                                <option key={i}>{i}</option>
                               ),
-                            );
-                          }}
-                        >
-                          <option disabled selected>
-                            Score
-                          </option>
-                          {[...Array(currentQuestion.maxPoints + 1)].map(
-                            (x, i) => (
-                              <option key={i}>{i}</option>
-                            ),
-                          )}
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
+                            )}
+                          </select>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            )}
+          </div>
+
+          <div className="flex w-full items-center justify-center pt-4">
+            <button
+              className={clsx('btn-secondary btn-sm btn w-36', {
+                'btn-disabled': isSubmitting,
+                loading: isSubmitting,
+              })}
+              onClick={submitCorrections}
+            >
+              Save
+            </button>
           </div>
         </div>
-      </div>
-
-      <div className="flex w-full items-center justify-center pt-4">
-        <button
-          className={clsx('btn-secondary btn-sm btn w-36', {
-            'btn-disabled': isSubmitting,
-            loading: isSubmitting,
-          })}
-          onClick={submitCorrections}
-        >
-          Save
-        </button>
       </div>
     </div>
   );
