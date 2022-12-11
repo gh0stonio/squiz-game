@@ -80,7 +80,7 @@ export default function QuestionFormModal({
         };
 
     if (files && files.length > 0) {
-      const imageName = files && files[0].name;
+      const imageName = uid(16);
       const imageRef = ref(storage, imageName);
       await uploadBytes(imageRef, files[0]);
       savingQuestion.image = imageName;
