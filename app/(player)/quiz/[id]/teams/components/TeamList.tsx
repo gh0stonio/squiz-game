@@ -42,7 +42,10 @@ export default function TeamList() {
           ) : (
             <div className="grid grid-cols-4 gap-4">
               {teams.map((team) => (
-                <div key={team.id} className="h-70 card bg-base-100 shadow-xl">
+                <div
+                  key={team.id}
+                  className="h-70 card-compact card bg-base-100 shadow-xl"
+                >
                   <div className="card-body justify-between">
                     <h2 className="card-title flex w-full items-center justify-between">
                       <p className="w-4/5 items-start overflow-hidden text-ellipsis whitespace-nowrap">

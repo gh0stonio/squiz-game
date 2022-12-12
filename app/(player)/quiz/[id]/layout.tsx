@@ -1,5 +1,5 @@
 import 'server-only';
-import { CgArrowTopRight } from 'react-icons/cg';
+import { BsArrowDownLeft } from 'react-icons/bs';
 import React from 'react';
 
 import NavBar from '~/shared/components/NavBar';
@@ -43,8 +43,8 @@ export default async function PlayerLayout({
         <div className="h-full w-full rounded-xl bg-gray-100 shadow-xl">
           {!user ? (
             <span className="flex h-full w-full items-center justify-center text-3xl">
-              Please log in first, it&apos;s up there on the right{' '}
-              <CgArrowTopRight className="h-10 w-10" />
+              <BsArrowDownLeft className="h-10 w-10" />
+              Please log in first, it&apos;s up there on the bottom left.
             </span>
           ) : (
             children

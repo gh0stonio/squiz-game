@@ -37,7 +37,7 @@ export default function NavBar({ isAdmin }: NavBarProps) {
               className={clsx('tooltip tooltip-right', {
                 active: pathName?.includes('lobby'),
               })}
-              data-tip="Quiz Lobby"
+              data-tip="Lobby"
             >
               <HiHome className="h-5 w-5 text-white" />
             </Link>
@@ -48,7 +48,7 @@ export default function NavBar({ isAdmin }: NavBarProps) {
               className={clsx('tooltip tooltip-right', {
                 active: pathName?.includes('teams'),
               })}
-              data-tip="Quiz Teams"
+              data-tip="Teams"
             >
               <HiUserGroup className="h-5 w-5 text-white" />
             </Link>
