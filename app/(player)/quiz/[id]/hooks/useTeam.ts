@@ -122,9 +122,26 @@ export default function useTeam() {
       if (!user || !checkIfLeader(team)) return;
 
       setIsChangeOngoing(true);
-      await updateDoc(doc(db, 'teams', team.id), {
-        members: arrayRemove(kickedUser),
-      });
+      await updateDoc(
+        doc(db, 'teams', team.id).withConverter(genericConverter<Team>()),
+        {
+          members: arrayRemove(kickedUser),
+        },
+      );
+      setIsChangeOngoing(false);
+    },
+    [checkIfLeader, user],
+  );
+
+  const delegateLead = React.useCallback(
+    async (team: Team, newLeader: User) => {
+      if (!user || !checkIfLeader(team)) return;
+
+      setIsChangeOngoing(true);
+      await updateDoc(
+        doc(db, 'teams', team.id).withConverter(genericConverter<Team>()),
+        { leader: newLeader },
+      );
       setIsChangeOngoing(false);
     },
     [checkIfLeader, user],
@@ -136,9 +153,12 @@ export default function useTeam() {
 
       setIsChangeOngoing(true);
 
-      await updateDoc(doc(db, 'teams', team.id), {
-        members: arrayUnion(user),
-      });
+      await updateDoc(
+        doc(db, 'teams', team.id).withConverter(genericConverter<Team>()),
+        {
+          members: arrayUnion(user),
+        },
+      );
 
       setIsChangeOngoing(false);
     },
@@ -151,9 +171,12 @@ export default function useTeam() {
 
       setIsChangeOngoing(true);
 
-      await updateDoc(doc(db, 'teams', team.id), {
-        members: arrayRemove(user),
-      });
+      await updateDoc(
+        doc(db, 'teams', team.id).withConverter(genericConverter<Team>()),
+        {
+          members: arrayRemove(user),
+        },
+      );
 
       setIsChangeOngoing(false);
     },
@@ -169,6 +192,7 @@ export default function useTeam() {
     editTeam,
     deleteTeam,
     kickPlayer,
+    delegateLead,
     joinTeam,
     leaveTeam,
   };

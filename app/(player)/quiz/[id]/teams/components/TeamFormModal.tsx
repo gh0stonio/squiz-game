@@ -3,6 +3,7 @@ import 'client-only';
 import clsx from 'clsx';
 import { createPortal } from 'react-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import { FaUserLock } from 'react-icons/fa';
 import { TiUserDelete } from 'react-icons/ti';
 import React from 'react';
 
@@ -24,6 +25,7 @@ export default function TeamFormModal({ onClose, team }: TeamFormProps) {
     editTeam,
     deleteTeam,
     kickPlayer,
+    delegateLead,
   } = useTeam();
 
   const isEdit = !!team;
@@ -96,8 +98,10 @@ export default function TeamFormModal({ onClose, team }: TeamFormProps) {
               <table className="table-compact table w-full">
                 <thead>
                   <tr className="h-8 [&>th]:bg-gray-400">
-                    <th className="w-11/12">Name</th>
-                    <th className="w-1/12 text-end">Action</th>
+                    <th className="w-10/12" style={{ zIndex: 0 }}>
+                      Name
+                    </th>
+                    <th className="w-2/12 text-center">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -114,11 +118,23 @@ export default function TeamFormModal({ onClose, team }: TeamFormProps) {
                       <tr key={member.uid} className="h-8 [&>td]:bg-gray-200">
                         <td>{member.name}</td>
                         <td>
-                          <div className="flex justify-end">
-                            <TiUserDelete
-                              className="h-8 w-8 cursor-pointer pr-2 text-gray-400"
-                              onClick={() => kickPlayer(team, member)}
-                            />
+                          <div className="flex justify-center">
+                            <div className="tooltip" data-tip="Delegate admin">
+                              <FaUserLock
+                                className="h-8 w-8 cursor-pointer pr-2 text-gray-400"
+                                onClick={() =>
+                                  delegateLead(team, member)?.then(() =>
+                                    closeModal(),
+                                  )
+                                }
+                              />
+                            </div>
+                            <div className="tooltip" data-tip="Kick user">
+                              <TiUserDelete
+                                className="h-8 w-8 cursor-pointer pr-2 text-gray-400"
+                                onClick={() => kickPlayer(team, member)}
+                              />
+                            </div>
                           </div>
                         </td>
                       </tr>
@@ -139,7 +155,7 @@ export default function TeamFormModal({ onClose, team }: TeamFormProps) {
             </button>
             {isSubmitting || isChangeOngoing ? (
               <button
-                className="btn-disabled loading btn-sm btn-square btn"
+                className="btn-disabled loading btn-square btn-sm btn"
                 type="button"
               />
             ) : (
