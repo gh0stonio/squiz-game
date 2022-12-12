@@ -14,18 +14,20 @@ function sendResultsHandler(req: NextApiRequest, res: NextApiResponse) {
 
   const question = req.body as Question;
   const params: v2.LogsApiSubmitLogRequest = {
-    body: [
-      {
-        message: `${new Date().toISOString()} ANSWERS [squiz game][${
-          question.quizId
-        }] question ${question.id}`,
-        additionalProperties: {
-          quizId: question.quizId,
-          questionId: question.id,
-          answers: JSON.stringify(question.answers),
-        },
+    body: (question.answers || []).map((answer) => ({
+      message: `${new Date().toISOString()} ANSWERS [squiz game] quiz="${
+        question.quizId
+      }" question="${question.id}" team="${answer.team}" score="${
+        answer.score
+      }"`,
+      additionalProperties: {
+        quizId: question.quizId,
+        questionId: question.id,
+        team: answer.team,
+        answer: answer.value,
+        score: (answer.score || 0).toString(),
       },
-    ],
+    })),
     contentEncoding: 'deflate',
   };
 
