@@ -25,7 +25,7 @@ export default function TeamList() {
         <div className="flex w-full items-center justify-end">
           <button
             type="button"
-            className={clsx('btn btn-accent btn-sm mb-6', {
+            className={clsx('btn-accent btn-sm btn mb-6', {
               'btn-disabled': quiz.status === 'in progress' || !!myTeam,
             })}
             onClick={() => setIsFormModalOpen(true)}
@@ -43,14 +43,16 @@ export default function TeamList() {
             <div className="grid grid-cols-4 gap-4">
               {teams.map((team) => (
                 <div key={team.id} className="h-70 card bg-base-100 shadow-xl">
-                  <div className="card-body">
+                  <div className="card-body justify-between">
                     <h2 className="card-title flex w-full items-center justify-between">
-                      <p>{team.name}</p>
-                      <p className="flex items-center justify-end">
+                      <p className="w-4/5 items-start overflow-hidden text-ellipsis whitespace-nowrap">
+                        {team.name}
+                      </p>
+                      <p className="flex w-1/5 justify-end">
                         {team.members.length} / {quiz.maxMembersPerTeam}
                       </p>
                     </h2>
-                    <div className="h-32">
+                    <div className="flex-1">
                       <div className="flex flex-col">
                         <p className="italic">Admin:</p>
                         <div className="flex pb-2">
@@ -104,14 +106,14 @@ export default function TeamList() {
                         </div>
                       </div>
                     </div>
-                    <div className="card-actions flex justify-end">
+                    <div className="card-actions flex justify-end pt-2">
                       {checkIfLeader(team) && (
                         <button
                           onClick={() => {
                             setEditingTeam(team);
                             setIsFormModalOpen(true);
                           }}
-                          className={clsx('btn btn-secondary btn-sm', {
+                          className={clsx('btn-secondary btn-sm btn', {
                             loading: isChangeOngoing,
                           })}
                         >
@@ -121,7 +123,7 @@ export default function TeamList() {
                       {myTeam?.id === team.id && !checkIfLeader(team) ? (
                         <button
                           onClick={() => leaveTeam(team)}
-                          className={clsx('btn btn-sm', {
+                          className={clsx('btn-sm btn', {
                             loading: isChangeOngoing,
                             'btn-disabled': isChangeOngoing,
                           })}
@@ -132,7 +134,7 @@ export default function TeamList() {
                         !myTeam && (
                           <button
                             onClick={() => joinTeam(team)}
-                            className={clsx('btn btn-secondary btn-sm', {
+                            className={clsx('btn-secondary btn-sm btn', {
                               loading: isChangeOngoing,
                               'btn-disabled':
                                 isChangeOngoing ||
