@@ -15,7 +15,6 @@ export default function NextQuestion() {
       </h3>
 
       <p>{nextQuestion.text}</p>
-      <p>{nextQuestion.answer}</p>
     </div>
   );
 }

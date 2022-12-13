@@ -32,7 +32,7 @@ export default function CurrentQuestion() {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex w-full">
+      <div className="flex w-full items-center">
         <h3 className="w-full text-2xl font-bold">
           Current Question - {currentQuestion.order}/{questions.length}
         </h3>
@@ -48,15 +48,15 @@ export default function CurrentQuestion() {
         </button>
       </div>
       <div className="flex items-center justify-between">
-        <div className="w-6/12">
+        <div className="h-full w-4/12">
           <p className="pt-4 pb-2 text-xl font-semibold">Questions</p>
           <p className="">{currentQuestion.text}</p>
         </div>
-        <div className="w-4/12">
+        <div className="h-full w-6/12">
           <p className="pt-4 pb-2 text-xl font-semibold">Correct Answer</p>
-          <p className="">{currentQuestion.answer}</p>
+          <p className="max-h-32 overflow-auto">{currentQuestion.answer}</p>
         </div>
-        <div className="flex w-2/12 justify-end gap-4">
+        <div className="flex h-full w-2/12 justify-end gap-4">
           <div>
             <p className="pt-4 pb-2 text-xl font-semibold">Duration</p>
             <p className="">{currentQuestion.duration}</p>

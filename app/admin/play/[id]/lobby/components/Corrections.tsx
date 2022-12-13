@@ -75,12 +75,12 @@ export default function Corrections() {
                 />
               </>
             ) : (
-              <table className="table w-full">
+              <table className="table-compact table w-full">
                 <thead className="sticky top-0">
                   <tr className="h-12 [&>th]:bg-gray-200">
-                    <th className="w-1/5">Team</th>
-                    <th className="w-3/5">Answer</th>
-                    <th className="w-1/5">Score</th>
+                    <th className="w-1/12">Team</th>
+                    <th className="w-10/12">Answer</th>
+                    <th className="w-1/12">Score</th>
                   </tr>
                 </thead>
                 <tbody>

@@ -34,7 +34,7 @@ export default function QuestionList({}: QuestionListProps) {
         </div>
 
         <div className="overflow-auto rounded-lg">
-          <table className="table h-full w-full">
+          <table className="table h-full w-full max-w-full">
             <thead className="sticky top-0">
               <tr className="h-12 [&>th]:bg-gray-200">
                 <th className="w-[2%]"></th>
@@ -51,7 +51,9 @@ export default function QuestionList({}: QuestionListProps) {
                   return (
                     <tr key={question.id} className="h-12">
                       <td>{question.order}</td>
-                      <td>{question.text}</td>
+                      <td className="max-w-lg overflow-hidden text-ellipsis whitespace-nowrap">
+                        {question.text}
+                      </td>
                       <td className="text-center">{question.duration}</td>
                       <td className="text-center">{question.maxPoints}</td>
                       <td className="text-end">

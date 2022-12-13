@@ -65,7 +65,7 @@ export default function Timer({ question, onDone }: TimerProps) {
   return (
     <span className="text-xl">
       Time left:{' '}
-      <span className="countdown font-mono font-semibold">
+      <span className="countdown font-mono text-2xl font-semibold">
         {/* 
                 // @ts-ignore */}
         <span style={{ '--value': duration?.minutes }}></span>:
