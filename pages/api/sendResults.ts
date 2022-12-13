@@ -17,9 +17,9 @@ function sendResultsHandler(req: NextApiRequest, res: NextApiResponse) {
     body: (question.answers || []).map((answer) => ({
       message: `${new Date().toISOString()} ANSWERS [squiz game] quiz="${
         question.quizId
-      }" question="${question.id}" team="${answer.team}" score="${
-        answer.score
-      }"`,
+      }" question="${question.id}" questionNumber="${question.order}" team="${
+        answer.team
+      }" score="${answer.score}"`,
       additionalProperties: {
         quizId: question.quizId,
         questionId: question.id,

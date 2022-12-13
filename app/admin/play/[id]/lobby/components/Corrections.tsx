@@ -26,19 +26,18 @@ export default function Corrections() {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const submitCorrections = React.useCallback(async () => {
-    if (!currentQuestion) return;
-
-    await sendResults({ ...currentQuestion, answers });
-
     await saveAnswersCorrection(answers);
 
     setIsSubmitting(false);
     setReadyForNextQuestion(true);
-  }, [currentQuestion, answers, saveAnswersCorrection]);
+  }, [answers, saveAnswersCorrection]);
   const goNext = React.useCallback(async () => {
+    if (!currentQuestion) return;
+
+    await sendResults({ ...currentQuestion, answers });
     await goToNextQuestion();
     router.refresh();
-  }, [goToNextQuestion, router]);
+  }, [answers, currentQuestion, goToNextQuestion, router]);
 
   // Listening for answers changes (useful for answers update)
   React.useEffect(() => {
