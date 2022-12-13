@@ -132,7 +132,7 @@ export default function Corrections() {
               })}
               onClick={submitCorrections}
             >
-              Save
+              Save score
             </button>
             <button
               className={clsx('btn-accent btn-sm btn w-36', {
@@ -140,7 +140,7 @@ export default function Corrections() {
               })}
               onClick={goNext}
             >
-              Next
+              Go to next question
             </button>
           </div>
         </div>
