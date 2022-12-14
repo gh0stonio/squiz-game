@@ -1,3 +1,4 @@
+import 'react-inner-image-zoom/lib/InnerImageZoom/styles.min.css';
 import 'react-toastify/dist/ReactToastify.css';
 import 'server-only';
 

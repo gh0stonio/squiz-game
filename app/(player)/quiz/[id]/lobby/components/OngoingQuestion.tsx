@@ -3,6 +3,7 @@ import 'client-only';
 import { getDownloadURL, ref } from 'firebase/storage';
 import Image from 'next/image';
 import { FaQuestionCircle } from 'react-icons/fa';
+import InnerImageZoom from 'react-inner-image-zoom';
 import { TailSpin } from 'react-loader-spinner';
 import React, { useRef } from 'react';
 
@@ -56,8 +57,6 @@ export default function OngoingQuestion({ question }: OngoingQuestionProps) {
     fetchingUrl(question.image);
   }, [question?.image]);
 
-  const hasImage = Boolean(question?.image);
-
   if (isCorrecting) return <Correction question={question} />;
 
   return (
@@ -83,13 +82,10 @@ export default function OngoingQuestion({ question }: OngoingQuestionProps) {
             <div className="relative flex h-full w-full items-center justify-center">
               {question?.image ? (
                 imageUrl ? (
-                  <Image
+                  <InnerImageZoom
                     src={imageUrl}
-                    alt="question image"
-                    loading="eager"
-                    className="h-fit object-contain"
-                    layout="fill"
-                    priority
+                    zoomSrc={imageUrl}
+                    className="absolute left-0 right-0 mx-auto h-full w-full [&>div>img]:absolute [&>div>img]:h-full [&>div]:flex [&>div]:h-full [&>div]:items-center [&>div]:justify-center"
                   />
                 ) : (
                   <TailSpin
