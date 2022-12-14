@@ -63,23 +63,23 @@ export default function OngoingQuestion({ question }: OngoingQuestionProps) {
     <>
       <div className="flex w-full flex-1 flex-col items-start justify-start">
         <div className="flex h-full w-full flex-col items-start justify-between">
-          <div className="flex h-[68%] w-full flex-col items-start justify-start gap-4">
-            <div className="flex w-full items-start justify-between">
-              <div className="flex flex-1 gap-4 text-2xl">
-                <div className="flex min-w-min gap-2">
-                  <FaQuestionCircle className="h-8 w-8" />{' '}
-                  <p>Question {question.order}: </p>
-                </div>
-                <h2 className="flex flex-1 gap-2 text-2xl font-bold">
-                  {question.text}
-                </h2>
+          <div className="flex w-full items-start justify-between">
+            <div className="flex flex-1 gap-4 text-2xl">
+              <div className="flex min-w-min gap-2">
+                <FaQuestionCircle className="h-8 w-8" />{' '}
+                <p>Question {question.order}: </p>
               </div>
-              <div className="flex w-60 items-start justify-end gap-3">
-                <Timer question={question} onDone={onTimerDone} />
-              </div>
+              <h2 className="flex flex-1 gap-2 text-2xl font-bold">
+                {question.text}
+              </h2>
             </div>
+            <div className="flex w-60 items-start justify-end gap-3">
+              <Timer question={question} onDone={onTimerDone} />
+            </div>
+          </div>
 
-            <div className="relative flex h-full w-full items-center justify-center">
+          <div className="my-4 flex h-full w-full justify-between gap-4">
+            <div className="relative flex h-full w-4/6 items-center justify-center">
               {question?.image ? (
                 imageUrl ? (
                   <InnerImageZoom
@@ -109,26 +109,28 @@ export default function OngoingQuestion({ question }: OngoingQuestionProps) {
                 />
               )}
             </div>
-          </div>
-          <div className="h-[32%] w-full">
-            <div className="flex w-full items-center justify-between">
-              <span className="text-lg">Your team answer:</span>
-              <h3 className="text-lg italic">
-                Question {question.order} / {questionsCount} - Maximum Points:{' '}
-                {question.maxPoints}
-              </h3>
-            </div>
 
-            <textarea
-              className="textarea-bordered textarea h-[70%] w-full resize-none pb-6 text-lg"
-              disabled={isSubmitting}
-              name="answer"
-              onChange={(event) => (answerRef.current = event.target.value)}
-            />
-            <span className="italic">
-              No worry, your team admin answer will be automatically sent at the
-              end of the timer (for now other members answers are not used yet).
-            </span>
+            <div className="w-2/6">
+              <div className="flex w-full items-center justify-between">
+                <span className="text-lg">Your team answer:</span>
+                <h3 className="text-lg italic">
+                  Question {question.order} / {questionsCount} - Maximum Points:{' '}
+                  {question.maxPoints}
+                </h3>
+              </div>
+
+              <textarea
+                className="textarea-bordered textarea h-[90%] w-full resize-none pb-6 text-lg"
+                disabled={isSubmitting}
+                name="answer"
+                onChange={(event) => (answerRef.current = event.target.value)}
+              />
+              <span className="italic">
+                No worry, your team admin answer will be automatically sent at
+                the end of the timer (for now other members answers are not used
+                yet).
+              </span>
+            </div>
           </div>
         </div>
       </div>
